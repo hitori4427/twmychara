@@ -502,6 +502,25 @@ L.push('（帳號截圖我會另外傳給你們配對）');
 }
 return L.join('\n');
 }
+function cartLines(payloads) {
+const c = {};
+const add = (k, n) => { if (n) c[k] = (c[k] || 0) + n; };
+for (const d of payloads) {
+if (d.service === 'create') add('創角', 1);
+if (d.service === 'grind') {
+add('入場費', d.rounds.filter(r => r.type !== 'hori').length);
+add('基本卡', d.rounds.filter(r => r.type === 'play').length);
+add('轉蛋', d.rounds.reduce((a, r) => a + (r.type === 'play' ? r.gachaOpen + r.gachaEnd : 0), 0));
+add('全套模式', d.rounds.reduce((a, r) => a + (r.type === 'play' ? r.gachaEndFull : 0), 0));
+add('印友卡', d.rounds.reduce((a, r) => a + (r.type === 'print' ? r.cards.length : 0), 0));
+add('橫機掉卡', d.rounds.reduce((a, r) => a + (r.type === 'hori' ? r.horiBase + r.horiAdd : 0), 0));
+add('錄影', d.rounds.filter(r => r.video).length);
+if (d.outfitChange) add('更換服裝', 1);
+}
+}
+const keys = ['創角','入場費','基本卡','轉蛋','全套模式','印友卡','橫機掉卡','錄影','更換服裝'];
+return keys.filter(k => c[k]).map(k => k + ' ×' + c[k]);
+}
 async function submitForm() {
 document.getElementById('errMsg').classList.add('hidden');
 const payloads = buildPayloads();
@@ -518,6 +537,8 @@ payloads.forEach((d, i) => {
 const body = summaryText(d).split('\n').filter(l => !l.startsWith('訂單編號')).join('\n');
 text += (payloads.length > 1 ? '\n\n— ' + (i === 0 ? '其一' : '其二') + ' —' : '') + body;
 });
+const cart = cartLines(payloads);
+if (cart.length) text += '\n\n【賣貨便這樣買】' + cart.join('、');
 if (payloads.length > 1) text += '\n\n合計：NT$ ' + payloads.reduce((a, d) => a + (d.total || 0), 0);
 document.getElementById('summary').value = text;
 document.getElementById('result').classList.remove('hidden');
