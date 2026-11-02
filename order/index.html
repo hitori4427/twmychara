@@ -77,13 +77,14 @@ input:focus, textarea:focus, select:focus { border-color: #db2777!important; box
 </section>
 
 <!-- 服務選擇 -->
+<p class="text-xs text-gray-500 mb-2">選擇服務（可複選：一筆訂單同時要「創角＋代刷」也可以，點一下開啟、再點一下取消）</p>
 <section class="grid grid-cols-2 gap-3 mb-4">
-<div id="svcCreate" class="svc rounded-2xl bg-white shadow p-4 text-center" onclick="setService('create')">
+<div id="svcCreate" class="svc rounded-2xl bg-white shadow p-4 text-center" onclick="toggleService('create')">
 <div class="text-3xl mb-1">🎀</div>
 <div class="font-bold text-gray-700">創角</div>
 <div class="text-xs text-gray-500 mt-1">幫你開一個全新帳號<br>名字・生日・年齡・初始造型</div>
 </div>
-<div id="svcGrind" class="svc rounded-2xl bg-white shadow p-4 text-center" onclick="setService('grind')">
+<div id="svcGrind" class="svc rounded-2xl bg-white shadow p-4 text-center" onclick="toggleService('grind')">
 <div class="text-3xl mb-1">🎮</div>
 <div class="font-bold text-gray-700">代刷帳號</div>
 <div class="text-xs text-gray-500 mt-1">用你的帳號代為遊玩<br>照價目表勾選項目</div>
@@ -195,6 +196,7 @@ input:focus, textarea:focus, select:focus { border-color: #db2777!important; box
 
 <!-- 送出 -->
 <section class="bg-white rounded-2xl shadow p-4 mb-4">
+<p id="grandLine" class="hidden text-center font-bold text-gray-700 mb-2">本次申請合計：<span id="grandTotal" class="text-pink-700">NT$ 0</span></p>
 <button id="submitBtn" onclick="submitForm()" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl text-lg">送出申請</button>
 <div id="result" class="hidden mt-4">
 <p class="text-sm font-bold text-gray-700 mb-1">✅ 已送出！請複製下面摘要，貼回粉專私訊給我們對單：</p>
@@ -235,7 +237,8 @@ const CATS = [
 
 const picks = {}; // 創角選擇
 const counts = { gachaOpen:0, gachaEnd:0, gachaEndFull:0, printCount:1, horiBase:1, horiAdd:0, video:0};
-let service = '', machine = '';
+let machine = '';
+const svcSel = { create: false, grind: false };
 let curAudio = null;
 
 function buildPickers() {
@@ -280,12 +283,13 @@ curAudio = new Audio(url);
 curAudio.play();
 }
 
-function setService(s) {
-service = s;
-document.getElementById('svcCreate').classList.toggle('sel', s === 'create');
-document.getElementById('svcGrind').classList.toggle('sel', s === 'grind');
-document.getElementById('panelCreate').classList.toggle('hidden', s!== 'create');
-document.getElementById('panelGrind').classList.toggle('hidden', s!== 'grind');
+function toggleService(s) {
+svcSel[s] = !svcSel[s];
+document.getElementById('svcCreate').classList.toggle('sel', svcSel.create);
+document.getElementById('svcGrind').classList.toggle('sel', svcSel.grind);
+document.getElementById('panelCreate').classList.toggle('hidden', !svcSel.create);
+document.getElementById('panelGrind').classList.toggle('hidden', !svcSel.grind);
+updateGrand();
 }
 function setMachine(m) {
 machine = m;
@@ -322,9 +326,9 @@ document.getElementById('cnt_gachaEndFull').textContent = counts.gachaEndFull;
 }
 calcTotal();
 }
-function calcTotal() {
+function grindAmount() {
 let t = 0;
-if (service === 'grind' && machine) {
+if (svcSel.grind && machine) {
 t += 30; // 入場費（橫機基本掉卡本身即含遊玩，仍照價目以入場概念顯示於明細）
 if (machine === 'play') t += counts.gachaOpen * 30 + counts.gachaEnd * 30 + counts.gachaEndFull * 90 - 30 + 30; // 入場30已計
 if (machine === 'print') t += counts.printCount * 30;
@@ -332,18 +336,34 @@ if (machine === 'hori') t += counts.horiBase * 30 + counts.horiAdd * 30 - 30; //
 t += counts.video * 10;
 if (document.getElementById('outfitChange').checked) t += 30;
 }
-document.getElementById('grindTotal').textContent = 'NT$ ' + t;
 return t;
+}
+function calcTotal() {
+const t = grindAmount();
+document.getElementById('grindTotal').textContent = 'NT$ ' + t;
+updateGrand();
+return t;
+}
+function updateGrand() {
+const total = (svcSel.create ? 60 : 0) + grindAmount();
+const line = document.getElementById('grandLine');
+if (svcSel.create || svcSel.grind) {
+line.classList.remove('hidden');
+document.getElementById('grandTotal').textContent = 'NT$ ' + total;
+} else {
+line.classList.add('hidden');
+}
 }
 document.addEventListener('change', e => { if (e.target.id === 'outfitChange') calcTotal(); if (e.target.id === 'isNewbie') document.getElementById('newbieNote').classList.toggle('hidden',!e.target.checked);});
 
 function err(msg) { const e = document.getElementById('errMsg'); e.textContent = msg; e.classList.remove('hidden'); window.scrollTo(0, document.body.scrollHeight);}
-function buildData() {
+function buildPayloads() {
 const orderId = document.getElementById('orderId').value.trim();
 if (!orderId) return err('請先填賣貨便訂單編號'), null;
-if (!service) return err('請先選擇服務：創角 或 代刷帳號'), null;
-const d = { time: new Date().toISOString(), orderId, service};
-if (service === 'create') {
+if (!svcSel.create && !svcSel.grind) return err('請先選擇服務：創角、代刷帳號（可複選）'), null;
+const out = [];
+if (svcSel.create) {
+const d = { time: new Date().toISOString(), orderId, service: 'create' };
 d.name = document.getElementById('chName').value.trim();
 d.birthday = document.getElementById('chBirth').value;
 d.age = document.getElementById('chAge').value;
@@ -354,8 +374,11 @@ if (!picks[cat.key]) return err('還沒選：' + cat.label), null;
 d[cat.key] = picks[cat.key];
 }
 d.total = 60;
-    d.note = document.getElementById('chNote').value.trim();
-} else {
+d.note = document.getElementById('chNote').value.trim();
+out.push(d);
+}
+if (svcSel.grind) {
+const d = { time: new Date().toISOString(), orderId, service: 'grind' };
 if (!machine) return err('請先選機台與服務'), null;
 d.machine = machine;
 Object.assign(d, counts);
@@ -367,10 +390,11 @@ d.printPose = document.getElementById('printPose').value.trim();
 d.outfitChange = document.getElementById('outfitChange').checked;
 d.isNewbie = document.getElementById('isNewbie').checked;
 if (d.isNewbie && machine === 'print') return err('提醒：初次遊玩尚無法印友卡，請先選「純遊玩」完成一輪喔'), null;
-d.total = calcTotal();
+d.total = grindAmount();
 d.note = document.getElementById('grNote').value.trim();
+out.push(d);
 }
-return d;
+return out;
 }
 function summaryText(d) {
 const L = [];
@@ -405,14 +429,22 @@ return L.join('\n');
 }
 async function submitForm() {
 document.getElementById('errMsg').classList.add('hidden');
-const d = buildData();
-if (!d) return;
+const payloads = buildPayloads();
+if (!payloads) return;
 const btn = document.getElementById('submitBtn');
 btn.disabled = true; btn.textContent = '送出中…';
 if (APPS_SCRIPT_URL) {
+for (const d of payloads) {
 try { await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain'}, body: JSON.stringify(d)});} catch (e) {}
 }
-document.getElementById('summary').value = summaryText(d);
+}
+let text = '【客製服務申請】\n訂單編號：' + payloads[0].orderId;
+payloads.forEach((d, i) => {
+const body = summaryText(d).split('\n').filter(l => !l.startsWith('訂單編號')).join('\n');
+text += (payloads.length > 1 ? '\n\n— ' + (i === 0 ? '其一' : '其二') + ' —' : '') + body;
+});
+if (payloads.length > 1) text += '\n\n合計：NT$ ' + payloads.reduce((a, d) => a + (d.total || 0), 0);
+document.getElementById('summary').value = text;
 document.getElementById('result').classList.remove('hidden');
 btn.textContent = '已送出 ✓ 可再次送出修正';
 btn.disabled = false;
