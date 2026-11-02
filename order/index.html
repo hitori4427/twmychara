@@ -72,7 +72,7 @@
 </div>
 <div class="fc fc-lav">
 <div class="font-bold text-gray-700">🤍 直機｜純遊玩</div>
-<p class="text-sm text-gray-600 leading-6">基本費 60 元（入場 30＋基本卡 30，每局必含）➡️ 開場轉蛋（30 元/次，最多 4 次，卡面隨機）➡️ 節奏遊戲 ➡️ 結尾轉蛋（30 元/次 或 全套模式 90 元/次，兩者合計最多 2 次）</p>
+<p class="text-sm text-gray-600 leading-6">入場費 30 元 ➡️ 開場轉蛋（30 元/次，最多 4 次，卡面隨機）➡️ 節奏遊戲 ➡️ 結尾轉蛋（30 元/次 或 全套模式 90 元/次，兩者合計 1~2 次，每局至少 1 次）｜每局最低 60 元</p>
 <ul class="text-xs text-gray-500 leading-5 list-disc pl-5">
 <li>結尾卡面為「節奏遊戲拍照環節」，版型不可指定，可許願（如單人等）</li>
 <li>轉蛋隨機選出的部位，盡量會拿不重複的</li>
@@ -242,7 +242,7 @@ const CATS = [
 ];
 
 const picks = {}; // 創角選擇
-function newRound(type) { return { type: type || 'play', gachaOpen:0, gachaEnd:0, gachaEndFull:0, cards:[{orient:'隨機', pose:''}], horiBase:1, horiAdd:0, video:false }; }
+function newRound(type) { return { type: type || 'play', gachaOpen:0, gachaEnd:1, gachaEndFull:0, cards:[{orient:'隨機', pose:''}], horiBase:1, horiAdd:0, video:false }; }
 let rounds = [newRound('play')];
 const svcSel = { create: false, grind: false };
 let curAudio = null;
@@ -312,7 +312,7 @@ updateGrand();
 }
 function roundPrice(r) {
 let t = 0;
-if (r.type === 'play') t = 60 + r.gachaOpen * 30 + r.gachaEnd * 30 + r.gachaEndFull * 90;
+if (r.type === 'play') t = 30 + r.gachaOpen * 30 + r.gachaEnd * 30 + r.gachaEndFull * 90;
 if (r.type === 'print') t = 30 + r.cards.length * 30;
 if (r.type === 'hori') t = (r.horiBase + r.horiAdd) * 30;
 if (r.video) t += 10;
@@ -328,6 +328,7 @@ r[key] = Math.min(lim[1], Math.max(lim[0], r[key] + delta));
 if (key === 'gachaEnd' || key === 'gachaEndFull') {
 const other = key === 'gachaEnd' ? 'gachaEndFull' : 'gachaEnd';
 if (r.gachaEnd + r.gachaEndFull > 2) r[other] = 2 - r[key];
+if (r.gachaEnd + r.gachaEndFull < 1) r[key] = 1 - r[other];
 }
 renderRounds();
 }
@@ -355,10 +356,10 @@ h += '<div class="grid grid-cols-3 gap-2 text-center mb-3">' + ['play','print','
 '<div class="svc rounded-xl p-2' + (r.type === t ? ' sel' : '') + '" onclick="setRoundType(' + i + ',\'' + t + '\')"><div class="font-bold text-xs">' + tName[t] + '</div></div>').join('') + '</div>';
 if (r.type === 'play') {
 h += '<div class="text-sm text-gray-700 space-y-3">';
-h += '<p class="text-gray-500 text-xs">基本費 60 元（入場 30＋基本卡 30）➡️ 開場轉蛋 ➡️ 節奏遊戲 ➡️ 結尾轉蛋</p>';
+h += '<p class="text-gray-500 text-xs">入場 30 元 ➡️ 開場轉蛋（卡片，最多 4 次）➡️ 節奏遊戲 ➡️ 結尾轉蛋（至少 1 次）</p>';
 h += stepRow(i, '開場轉蛋', 'gachaOpen', r.gachaOpen, '30 元/次，最多 4 次');
-h += stepRow(i, '結尾轉蛋 一般', 'gachaEnd', r.gachaEnd, '30 元/次');
-h += stepRow(i, '結尾轉蛋 全套模式', 'gachaEndFull', r.gachaEndFull, '90 元/次，與一般合計最多 2 次');
+h += stepRow(i, '結尾轉蛋 一般', 'gachaEnd', r.gachaEnd, '30 元/次（與全套合計 1~2 次）');
+h += stepRow(i, '結尾轉蛋 全套模式', 'gachaEndFull', r.gachaEndFull, '90 元/次（與一般合計 1~2 次）');
 h += '</div>';
 }
 if (r.type === 'print') {
@@ -509,7 +510,6 @@ for (const d of payloads) {
 if (d.service === 'create') add('創角', 1);
 if (d.service === 'grind') {
 add('入場費', d.rounds.filter(r => r.type !== 'hori').length);
-add('基本卡', d.rounds.filter(r => r.type === 'play').length);
 add('轉蛋', d.rounds.reduce((a, r) => a + (r.type === 'play' ? r.gachaOpen + r.gachaEnd : 0), 0));
 add('全套模式', d.rounds.reduce((a, r) => a + (r.type === 'play' ? r.gachaEndFull : 0), 0));
 add('印友卡', d.rounds.reduce((a, r) => a + (r.type === 'print' ? r.cards.length : 0), 0));
@@ -518,7 +518,7 @@ add('錄影', d.rounds.filter(r => r.video).length);
 if (d.outfitChange) add('更換服裝', 1);
 }
 }
-const keys = ['創角','入場費','基本卡','轉蛋','全套模式','印友卡','橫機掉卡','錄影','更換服裝'];
+const keys = ['創角','入場費','轉蛋','全套模式','印友卡','橫機掉卡','錄影','更換服裝'];
 return keys.filter(k => c[k]).map(k => k + ' ×' + c[k]);
 }
 async function submitForm() {
@@ -568,7 +568,7 @@ const raw = localStorage.getItem(SAVE_KEY);
 if (!raw) return;
 const st = JSON.parse(raw);
 if (st.picks) Object.assign(picks, st.picks);
-if (Array.isArray(st.rounds) && st.rounds.length) rounds = st.rounds;
+if (Array.isArray(st.rounds) && st.rounds.length) { rounds = st.rounds; rounds.forEach(r => { if (r.type === 'play' && (r.gachaEnd + r.gachaEndFull) < 1) r.gachaEnd = 1; }); }
 if (st.fields) FIELD_IDS.forEach(id => { const el = document.getElementById(id); if (el && st.fields[id] != null) el.value = st.fields[id]; });
 if (st.checks) ['isNewbie','outfitChange'].forEach(id => { const el = document.getElementById(id); if (el && st.checks[id] != null) el.checked = st.checks[id]; });
 if (st.svcSel) {
