@@ -221,6 +221,7 @@
 <p class="text-sm text-gray-600 mb-2">🛒 還沒下單嗎？照摘要最後的「賣貨便這樣買」到<a href="https://myship.7-11.com.tw/general/detail/GM2611028968410" target="_blank" rel="noopener" class="underline font-bold">賣貨便賣場</a>組購物車結帳就好。</p>
 <a id="msgrBtn" href="https://m.me/797673740092380" target="_blank" rel="noopener" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl mb-2">💬 打開粉專私訊，確認後送出</a>
 <p class="text-xs text-gray-400 mb-2">點按鈕會打開與粉專的 Messenger 對話，摘要會自動帶入輸入框（若你的版本沒自動帶入，貼上剛複製的摘要即可）。</p>
+<div id="previewArea" class="mb-3"></div>
 <textarea id="summary" rows="10" readonly class="w-full border-2 border-pink-200 rounded-xl px-3 py-2 text-sm"></textarea>
 <button onclick="copySummary()" class="mt-2 w-full bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold py-2 rounded-xl">複製摘要</button>
 </div>
@@ -539,6 +540,49 @@ if (d.outfitChange) add('更換服裝', 1);
 const keys = ['創角','入場費','轉蛋','全套模式','印友卡','橫機掉卡','錄影','更換服裝'];
 return keys.filter(k => c[k]).map(k => k + ' ×' + c[k]);
 }
+function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function optImg(catKey, name) {
+const cat = CATS.find(c => c.key === catKey);
+if (!cat) return null;
+const o = cat.opts.find(x => x[0] === name);
+return o ? o[1] : null;
+}
+function renderPreview(payloads) {
+let h = '';
+const crt = payloads.find(d => d.service === 'create');
+const grd = payloads.find(d => d.service === 'grind');
+if (crt) {
+h += '<div class="bg-pink-50 border-2 border-pink-200 rounded-2xl p-3 mb-3">';
+h += '<div class="font-bold text-pink-700 mb-1">🎀 創角預覽</div>';
+h += '<p class="text-sm text-gray-600 mb-2">' + esc(crt.name || '') + '｜生日 ' + esc(crt.birthday || '') + '｜' + esc(crt.age || '') + ' 歲</p>';
+h += '<div class="grid grid-cols-3 gap-2">';
+const names = { face:'臉型', voice:'聲線', skin:'膚色', eyes:'眼睛', bangs:'瀏海', backHair:'後方髮型', hairColor:'頭髮顏色', highlight:'挑染', highlightColor:'挑染顏色', makeup:'其他化妝', bracelet:'手環' };
+for (const key of Object.keys(names)) {
+if (key === 'highlightColor' && picks['highlight'] !== '細挑染') continue;
+const v = picks[key];
+if (key === 'makeup') {
+const arr = Array.isArray(v) ? v : [];
+for (const m of arr) {
+const img = optImg('makeup', m);
+h += '<div class="bg-white rounded-xl p-1 text-center">' + (img ? '<img src="' + IMG + img + '" class="rounded-lg" loading="lazy">' : '<div class="py-5 text-gray-400 font-bold">無</div>') + '<div class="text-[11px] text-gray-400 mt-1">其他化妝</div><div class="text-xs font-bold text-gray-700">' + esc(m) + '</div></div>';
+}
+continue;
+}
+if (!v) continue;
+const img = optImg(key, v);
+h += '<div class="bg-white rounded-xl p-1 text-center">' + (img ? '<img src="' + IMG + img + '" class="rounded-lg" loading="lazy">' : '<div class="py-5 text-gray-400 font-bold">無</div>') + '<div class="text-[11px] text-gray-400 mt-1">' + names[key] + '</div><div class="text-xs font-bold text-gray-700">' + esc(v) + '</div></div>';
+}
+h += '</div></div>';
+}
+if (grd) {
+const lines = summaryText(grd).split('\n').slice(2).filter(x => x.trim());
+h += '<div class="bg-violet-50 border-2 border-violet-200 rounded-2xl p-3 mb-3">';
+h += '<div class="font-bold text-violet-700 mb-1">🎮 代刷預覽</div>';
+h += lines.map(x => '<p class="text-sm text-gray-600">' + esc(x) + '</p>').join('');
+h += '</div>';
+}
+document.getElementById('previewArea').innerHTML = h;
+}
 async function submitForm() {
 document.getElementById('errMsg').classList.add('hidden');
 const payloads = buildPayloads();
@@ -561,6 +605,7 @@ if (payloads.length > 1) text += '\n\n合計：NT$ ' + payloads.reduce((a, d) =>
 text += '\n\n粉專私訊：https://m.me/797673740092380';
 const enc = encodeURIComponent(text);
 document.getElementById('msgrBtn').href = 'https://m.me/797673740092380' + (enc.length < 1900 ? '?text=' + enc : '');
+renderPreview(payloads);
 document.getElementById('summary').value = text;
 document.getElementById('result').classList.remove('hidden');
 btn.textContent = '已送出 ✓ 可再次送出修正';
