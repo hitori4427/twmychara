@@ -187,6 +187,13 @@
 </section>
 
 <section class="bg-white rounded-2xl shadow p-4 mb-4">
+<div class="font-bold text-gray-700 mb-1">代刷帳號（選填）</div>
+<p class="text-xs text-gray-400 mb-2">可以直接在這裡給我們帳號，就不用再跑一趟私訊；之後再到粉專私訊傳截圖也可以。</p>
+<input id="accountId" type="text" placeholder="帳號 ID／名稱（選填）" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2 mb-2">
+<p class="text-xs text-gray-400">📷 帳號 QR 圖或帳號截圖，請直接傳到粉專私訊給我們（用訂單編號配對）。</p>
+</section>
+
+<section class="bg-white rounded-2xl shadow p-4 mb-4">
 <div class="flex items-center justify-between">
 <span class="font-bold text-gray-700">預估總價</span>
 <span id="grindTotal" class="text-2xl font-bold text-pink-700">NT$ 0</span>
@@ -461,6 +468,8 @@ d.wishSong = document.getElementById('wishSong').value.trim();
 d.wishCard = document.getElementById('wishCard').value.trim();
 d.partner = document.getElementById('partner').value;
 d.isNewbie = document.getElementById('isNewbie').checked;
+d.accountId = document.getElementById('accountId').value.trim();
+if (d.accountId) d.note = (d.note ? d.note + '｜' : '') + '帳號ID：' + d.accountId;
 if (d.isNewbie && rounds.some(r => r.type === 'print')) return err('提醒：初次遊玩尚無法印友卡，請先把印友卡的局改成「純遊玩」完成一輪喔'), null;
 d.total = grindAmount();
 const userNote = document.getElementById('grNote').value.trim();
@@ -503,6 +512,7 @@ if (d.wishSong) L.push('許願曲目：' + d.wishSong);
 if (d.wishCard) L.push('卡面許願：' + d.wishCard);
 if (d.rounds.some(r => r.type === 'play')) L.push('搭檔：' + d.partner);
 if (d.outfitChange) L.push('更換服裝：是（+30 元）');
+if (d.accountId) L.push('帳號ID：' + d.accountId);
 if (d.isNewbie) L.push('新手：是');
 L.push('預估總價：NT$ ' + d.total);
 L.push('（帳號截圖我會另外傳給你們配對）');
@@ -559,7 +569,7 @@ navigator.clipboard.writeText(s.value);
 }
 // ===== 自動存檔（切去賣貨便再回來不用重填） =====
 const SAVE_KEY = 'aipri-intake-v2';
-const FIELD_IDS = ['chName','chBirth','chAge','chNote','wishSong','wishCard','partner','grNote','orderId'];
+const FIELD_IDS = ['chName','chBirth','chAge','chNote','wishSong','wishCard','partner','grNote','orderId','accountId'];
 function saveState() {
 try {
 const st = { svcSel, picks, rounds, fields: {}, checks: {} };
