@@ -219,6 +219,8 @@
 <div id="result" class="hidden mt-4">
 <p class="text-sm font-bold text-gray-700 mb-1">✅ 已送出！請複製下面摘要，貼回粉專私訊給我們對單：</p>
 <p class="text-sm text-gray-600 mb-2">🛒 還沒下單嗎？照摘要最後的「賣貨便這樣買」到<a href="https://myship.7-11.com.tw/general/detail/GM2611028968410" target="_blank" rel="noopener" class="underline font-bold">賣貨便賣場</a>組購物車結帳就好。</p>
+<a id="msgrBtn" href="https://m.me/797673740092380" target="_blank" rel="noopener" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl mb-2">💬 打開粉專私訊，確認後送出</a>
+<p class="text-xs text-gray-400 mb-2">點按鈕會打開與粉專的 Messenger 對話，摘要會自動帶入輸入框（若你的版本沒自動帶入，貼上剛複製的摘要即可）。</p>
 <textarea id="summary" rows="10" readonly class="w-full border-2 border-pink-200 rounded-xl px-3 py-2 text-sm"></textarea>
 <button onclick="copySummary()" class="mt-2 w-full bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold py-2 rounded-xl">複製摘要</button>
 </div>
@@ -556,6 +558,9 @@ text += (payloads.length > 1 ? '\n\n— ' + (i === 0 ? '其一' : '其二') + ' 
 const cart = cartLines(payloads);
 if (cart.length) text += '\n\n【賣貨便這樣買】' + cart.join('、');
 if (payloads.length > 1) text += '\n\n合計：NT$ ' + payloads.reduce((a, d) => a + (d.total || 0), 0);
+text += '\n\n粉專私訊：https://m.me/797673740092380';
+const enc = encodeURIComponent(text);
+document.getElementById('msgrBtn').href = 'https://m.me/797673740092380' + (enc.length < 1900 ? '?text=' + enc : '');
 document.getElementById('summary').value = text;
 document.getElementById('result').classList.remove('hidden');
 btn.textContent = '已送出 ✓ 可再次送出修正';
