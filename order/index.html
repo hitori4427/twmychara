@@ -160,6 +160,7 @@
 <option value="機台隨機">搭檔：使用機台隨機角色</option>
 <option value="自備友卡">搭檔：自備友卡（秘偶也接受，事後請至私訊提供電子友卡）</option>
 </select>
+<label class="flex items-center gap-2"><input id="outfitChange" type="checkbox" class="w-4 h-4 accent-pink-600"> 更換服裝（需至直機，另加一次入場費 30 元）</label>
 <label class="flex items-center gap-2"><input id="isNewbie" type="checkbox" class="w-4 h-4 accent-pink-600"> 我是新手（尚未遊玩過拜偶，玩過秘偶）</label>
 <div id="newbieNote" class="hidden bg-pink-50 rounded-xl p-3 text-xs leading-5">
 📌 新手注意事項：可「一次」調整角色設定（年齡、眼型、聲線等），即使不更改也請在備註告知選擇方式。<br>
@@ -350,7 +351,7 @@ h += '</div>';
 }
 if (r.type === 'print') {
 h += '<div class="text-sm text-gray-700 space-y-2">';
-h += '<p class="text-gray-500 text-xs">入場 30 元 ＋ 印製 30 元/張，每張可各自選直式／橫式。一局最多存 2 套衣服，想換衣服再印請新增一局。</p>';
+h += '<p class="text-gray-500 text-xs">入場 30 元 ＋ 印製 30 元/張，每張可各自選直式／橫式。一局最多存 2 套衣服到衣櫥，最多 2 張可穿不同衣服。</p>';
 r.cards.forEach((c, k) => {
 h += '<div class="flex items-center gap-2"><span class="text-xs font-bold whitespace-nowrap">第 ' + (k + 1) + ' 張</span>' +
 '<select class="border-2 border-pink-200 rounded-xl px-2 py-1" onchange="setCardField(' + i + ',' + k + ',\'orient\',this.value)">' +
@@ -376,7 +377,10 @@ calcTotal();
 }
 function grindAmount() {
 if (!svcSel.grind) return 0;
-return rounds.reduce((a, r) => a + roundPrice(r), 0);
+let t = rounds.reduce((a, r) => a + roundPrice(r), 0);
+const oc = document.getElementById('outfitChange');
+if (oc && oc.checked) t += 30;
+return t;
 }
 function calcTotal() {
 const t = grindAmount();
@@ -396,7 +400,7 @@ document.getElementById('grandTotal').textContent = 'NT$ ' + total;
 line.classList.add('hidden');
 }
 }
-document.addEventListener('change', e => { if (e.target.id === 'isNewbie') document.getElementById('newbieNote').classList.toggle('hidden', !e.target.checked); });
+document.addEventListener('change', e => { if (e.target.id === 'outfitChange') calcTotal(); if (e.target.id === 'isNewbie') document.getElementById('newbieNote').classList.toggle('hidden', !e.target.checked); });
 
 function err(msg) { const e = document.getElementById('errMsg'); e.textContent = msg; e.classList.remove('hidden'); window.scrollTo(0, document.body.scrollHeight); }
 function buildPayloads() {
@@ -434,7 +438,7 @@ d.printPose = rounds.map((r, i) => r.type === 'print' ? r.cards.map((c, k) => c.
 d.horiBase = rounds.reduce((a, r) => a + (r.type === 'hori' ? r.horiBase : 0), 0);
 d.horiAdd = rounds.reduce((a, r) => a + (r.type === 'hori' ? r.horiAdd : 0), 0);
 d.video = rounds.filter(r => r.video).length;
-d.outfitChange = false;
+d.outfitChange = document.getElementById('outfitChange').checked;
 d.wishSong = document.getElementById('wishSong').value.trim();
 d.wishCard = document.getElementById('wishCard').value.trim();
 d.partner = document.getElementById('partner').value;
@@ -480,6 +484,7 @@ L.push(x);
 if (d.wishSong) L.push('許願曲目：' + d.wishSong);
 if (d.wishCard) L.push('卡面許願：' + d.wishCard);
 if (d.rounds.some(r => r.type === 'play')) L.push('搭檔：' + d.partner);
+if (d.outfitChange) L.push('更換服裝：是（+30 元）');
 if (d.isNewbie) L.push('新手：是');
 L.push('預估總價：NT$ ' + d.total);
 L.push('（帳號截圖我會另外傳給你們配對）');
