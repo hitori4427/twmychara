@@ -24,14 +24,52 @@ input:focus, textarea:focus, select:focus { border-color: #db2777!important; box
 <header class="text-center mb-6">
 <h1 class="text-2xl font-bold text-pink-700">✨ 客製服務申請 ✨</h1>
 <p class="text-sm text-gray-600 mt-1">Play Nijigen Stardust｜創角・代刷 申請表</p>
-<p class="text-xs text-gray-500 mt-2">請先填寫賣貨便訂單編號，再選擇服務。送出後資料會傳給賣家，<br>同時請把送出後產生的摘要貼回粉專私訊，方便我們對單 🩵</p>
+<p class="text-xs text-gray-500 mt-2">先看下面的價目與規則，決定好之後請先到賣貨便下單，<br>拿到訂單編號再回到這頁填寫申請 🩵</p>
 </header>
 
-<!-- 共通：訂單編號 -->
+
+
+<!-- 價目與規則（宣傳區） -->
 <section class="bg-white rounded-2xl shadow p-4 mb-4">
-<label class="block font-bold text-gray-700 mb-1">賣貨便訂單編號 <span class="text-pink-600">*</span></label>
-<input id="orderId" type="text" placeholder="例如 CM2610066926238" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
-<p class="text-xs text-gray-400 mt-1">在賣貨便「訂單明細」裡可以找到，以 CM 開頭。</p>
+<div class="font-bold text-pink-700 text-lg mb-2">📋 代刷價目與規則</div>
+<div class="mb-3">
+<div class="font-bold text-gray-700">🤍 直機｜純遊玩</div>
+<p class="text-sm text-gray-600 leading-6">入場費 30 元 ➡️ 開場轉蛋（30 元/次，最多 4 次，卡面隨機）➡️ 節奏遊戲 ➡️ 結尾轉蛋（30 元/次 或 全套模式 90 元/次，兩者合計最多 2 次）</p>
+<ul class="text-xs text-gray-500 leading-5 list-disc pl-5">
+<li>結尾卡面為「節奏遊戲拍照環節」，版型不可指定，可許願（如單人等）</li>
+<li>轉蛋隨機選出的部位，盡量會拿不重複的</li>
+<li>歌曲隨機，可許願曲目；搭檔可自備友卡（秘偶也接受）或使用機台隨機角色</li>
+</ul>
+</div>
+<div class="mb-3">
+<div class="font-bold text-gray-700">🤍 直機｜印友卡</div>
+<p class="text-sm text-gray-600 leading-6">入場費 30 元/次 ＋ 友卡印製 30 元/張（每輪最多 4 張）<br>一張 ＝ 30＋30 ＝ 60 元；同一場印滿 4 張 ＝ 30＋30×4 ＝ 150 元</p>
+<ul class="text-xs text-gray-500 leading-5 list-disc pl-5">
+<li>一局最多存 2 套衣服到衣櫥，所以最多 2 張能穿不同衣服</li>
+<li>可指定：直/橫式、動作、版型；未指定將由我方隨機挑選</li>
+</ul>
+</div>
+<div class="mb-3">
+<div class="font-bold text-gray-700">🤍 橫機</div>
+<p class="text-sm text-gray-600 leading-6">基本掉卡 30 元/張 ＋ 加購 30 元/張（最多 6 張）</p>
+<ul class="text-xs text-gray-500 leading-5 list-disc pl-5">
+<li>遊玩後提供：卡片照片按順序排開、遊戲總結畫面</li>
+<li>不提供掉卡錄影</li>
+</ul>
+</div>
+<div class="mb-1">
+<div class="font-bold text-gray-700">📌 其他</div>
+<ul class="text-sm text-gray-600 leading-6 list-disc pl-5">
+<li>更換服裝：需至直機更換，另收一次入場費 30 元</li>
+<li>錄影：一局一部 ＋10 元，存入 OneDrive 雲端</li>
+<li>友卡：可自備（提供電子友卡）或使用機台隨機</li>
+</ul>
+</div>
+<div class="bg-pink-50 rounded-xl p-3 mt-3 text-xs leading-5 text-gray-600">
+<p class="font-bold text-gray-700">⚠️ 新手（尚未遊玩拜偶，已遊玩過密偶）注意事項</p>
+<p>1️⃣ 可「一次」調整角色設定（年齡、眼型、聲線等），即使不更改，也請告知選擇方式。</p>
+<p>‼️ 初次遊玩尚無法印友卡，需完成一輪遊玩後才可使用此功能。</p>
+</div>
 </section>
 
 <!-- 服務選擇 -->
@@ -137,6 +175,13 @@ input:focus, textarea:focus, select:focus { border-color: #db2777!important; box
 <p class="text-xs text-pink-600 mt-2">⚠️ 代刷的帳號資料不用填在這裡：送出後請至粉專私訊傳帳號截圖給我們配對。</p>
 </section>
 </div>
+
+<!-- 訂單編號（下單後才會有，放在最後填） -->
+<section class="bg-white rounded-2xl shadow p-4 mb-4">
+<label class="block font-bold text-gray-700 mb-1">賣貨便訂單編號 <span class="text-pink-600">*</span></label>
+<input id="orderId" type="text" placeholder="例如 CM2610066926238" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+<p class="text-xs text-gray-400 mt-1">下單後在賣貨便「訂單明細」裡可以找到，以 CM 開頭。還沒下單的話，請先完成下單再回來填這張表。</p>
+</section>
 
 <!-- 送出 -->
 <section class="bg-white rounded-2xl shadow p-4 mb-4">
