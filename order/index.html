@@ -4,18 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Play Nijigen Stardust｜客製服務申請</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background: #fdf2f8;}
-.opt { cursor: pointer; border: 3px solid transparent; border-radius: 12px; transition: all.15s; background:#fff;}
-.opt:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(219,39,119,.18);}
-.opt.sel { border-color: #db2777; box-shadow: 0 4px 14px rgba(219,39,119,.35);}
-.opt img { border-radius: 8px; width: 100%; height: auto; display: block;}
-.svc { cursor: pointer; border: 3px solid #fbcfe8; transition: all.15s;}
-.svc.sel { border-color: #db2777; background: #fff1f2;}
-input[type=text], input[type=number], input[type=date], textarea, select { outline: none;}
-input:focus, textarea:focus, select:focus { border-color: #db2777!important; box-shadow: 0 0 0 3px rgba(219,39,119,.15);}
-.stepper button { width: 36px; height: 36px;}
+  :root { --ink:#0a0a0a; --body:#3a3a3a; --muted:#6a6a6a; --hairline:#e5e5e5; --canvas:#fffaf0; --soft:#faf5e8; --card:#f5f0e0; --pink:#ff4d8b; }
+  body { font-family: 'Inter','Noto Sans TC','Segoe UI','Microsoft JhengHei',sans-serif; background: var(--canvas); color: var(--body); }
+  h1 { letter-spacing: -1px; font-weight: 600; color: var(--ink); }
+  .shadow { box-shadow: none !important; border: 1px solid var(--hairline); }
+  .opt { cursor: pointer; border: 2px solid var(--hairline); border-radius: 16px; transition: all .15s; background:#fff; }
+  .opt:hover { transform: translateY(-2px); border-color: #0a0a0a55; }
+  .opt.sel { border-color: var(--ink); background: var(--card); }
+  .opt img { border-radius: 10px; width: 100%; height: auto; display: block; }
+  .svc { cursor: pointer; border: 2px solid var(--hairline); background:#fff; transition: all .15s; }
+  .svc.sel { border-color: var(--ink); background: var(--card); }
+  input[type=text], input[type=number], input[type=date], textarea, select { outline: none; background:#fff; }
+  input:focus, textarea:focus, select:focus { border-color: var(--ink) !important; box-shadow: 0 0 0 3px rgba(10,10,10,.08); }
+  .stepper button { width: 38px; height: 38px; border-radius: 12px; }
+  /* Clay 色彩對照（覆蓋原本的粉色 Tailwind 類別） */
+  .border-pink-200 { border-color: var(--hairline) !important; }
+  .border-pink-100 { border-color: #f0f0f0 !important; }
+  .bg-pink-600 { background-color: var(--ink) !important; }
+  .hover\:bg-pink-700:hover { background-color: #1f1f1f !important; }
+  .bg-pink-100 { background-color: var(--card) !important; }
+  .hover\:bg-pink-200:hover { background-color: #ebe6d6 !important; }
+  .bg-pink-50 { background-color: var(--soft) !important; }
+  .text-pink-700 { color: var(--ink) !important; }
+  .text-pink-600 { color: var(--pink) !important; }
+  .accent-pink-600 { accent-color: var(--ink); }
+  /* Clay 彩色特色卡 */
+  .fc { border-radius: 24px; padding: 20px; margin-bottom: 12px; }
+  .fc-pink { background: #ff4d8b; } .fc-pink, .fc-pink * { color: #fff !important; }
+  .fc-lav { background: #b8a4ed; }
+  .fc-peach { background: #ffb084; }
+  .fc-ochre { background: #e8b94a; }
+  .fc-cream { background: #f5f0e0; }
 </style>
 </head>
 <body class="min-h-screen">
@@ -32,11 +55,11 @@ input:focus, textarea:focus, select:focus { border-color: #db2777!important; box
 <!-- 價目與規則（宣傳區） -->
 <section class="bg-white rounded-2xl shadow p-4 mb-4">
 <div class="font-bold text-pink-700 text-lg mb-2">📋 價目與規則</div>
-<div class="mb-3">
-<div class="font-bold text-gray-700">🎀 創角</div>
+<div class="fc fc-pink">
+<div class="font-bold">🎀 創角</div>
 <p class="text-sm text-gray-600 leading-6">費用 <span class="font-bold text-pink-700">60 元</span>（開一個全新帳號，含名字、生日、年齡與初始造型設定）</p>
 </div>
-<div class="mb-3">
+<div class="fc fc-lav">
 <div class="font-bold text-gray-700">🤍 直機｜純遊玩</div>
 <p class="text-sm text-gray-600 leading-6">入場費 30 元 ➡️ 開場轉蛋（30 元/次，最多 4 次，卡面隨機）➡️ 節奏遊戲 ➡️ 結尾轉蛋（30 元/次 或 全套模式 90 元/次，兩者合計最多 2 次）</p>
 <ul class="text-xs text-gray-500 leading-5 list-disc pl-5">
@@ -45,7 +68,7 @@ input:focus, textarea:focus, select:focus { border-color: #db2777!important; box
 <li>歌曲隨機，可許願曲目；搭檔可自備友卡（秘偶也接受）或使用機台隨機角色</li>
 </ul>
 </div>
-<div class="mb-3">
+<div class="fc fc-peach">
 <div class="font-bold text-gray-700">🤍 直機｜印友卡</div>
 <p class="text-sm text-gray-600 leading-6">入場費 30 元/次 ＋ 友卡印製 30 元/張（每輪最多 4 張）<br>一張 ＝ 30＋30 ＝ 60 元；同一場印滿 4 張 ＝ 30＋30×4 ＝ 150 元</p>
 <ul class="text-xs text-gray-500 leading-5 list-disc pl-5">
@@ -53,7 +76,7 @@ input:focus, textarea:focus, select:focus { border-color: #db2777!important; box
 <li>可指定：直/橫式、動作、版型；未指定將由我方隨機挑選</li>
 </ul>
 </div>
-<div class="mb-3">
+<div class="fc fc-ochre">
 <div class="font-bold text-gray-700">🤍 橫機</div>
 <p class="text-sm text-gray-600 leading-6">基本掉卡 30 元/張 ＋ 加購 30 元/張（最多 6 張）</p>
 <ul class="text-xs text-gray-500 leading-5 list-disc pl-5">
@@ -61,7 +84,7 @@ input:focus, textarea:focus, select:focus { border-color: #db2777!important; box
 <li>不提供掉卡錄影</li>
 </ul>
 </div>
-<div class="mb-1">
+<div class="fc fc-cream">
 <div class="font-bold text-gray-700">📌 其他</div>
 <ul class="text-sm text-gray-600 leading-6 list-disc pl-5">
 <li>更換服裝：需至直機更換，另收一次入場費 30 元</li>
