@@ -72,7 +72,7 @@
 </div>
 <div class="fc fc-lav">
 <div class="font-bold text-gray-700">🤍 直機｜純遊玩</div>
-<p class="text-sm text-gray-600 leading-6">入場費 30 元 ➡️ 開場轉蛋（30 元/次，最多 4 次，卡面隨機）➡️ 節奏遊戲 ➡️ 結尾轉蛋（30 元/次 或 全套模式 90 元/次，兩者合計最多 2 次）</p>
+<p class="text-sm text-gray-600 leading-6">基本費 60 元（入場 30＋基本卡 30，每局必含）➡️ 開場轉蛋（30 元/次，最多 4 次，卡面隨機）➡️ 節奏遊戲 ➡️ 結尾轉蛋（30 元/次 或 全套模式 90 元/次，兩者合計最多 2 次）</p>
 <ul class="text-xs text-gray-500 leading-5 list-disc pl-5">
 <li>結尾卡面為「節奏遊戲拍照環節」，版型不可指定，可許願（如單人等）</li>
 <li>轉蛋隨機選出的部位，盡量會拿不重複的</li>
@@ -312,7 +312,7 @@ updateGrand();
 }
 function roundPrice(r) {
 let t = 0;
-if (r.type === 'play') t = 30 + r.gachaOpen * 30 + r.gachaEnd * 30 + r.gachaEndFull * 90;
+if (r.type === 'play') t = 60 + r.gachaOpen * 30 + r.gachaEnd * 30 + r.gachaEndFull * 90;
 if (r.type === 'print') t = 30 + r.cards.length * 30;
 if (r.type === 'hori') t = (r.horiBase + r.horiAdd) * 30;
 if (r.video) t += 10;
@@ -355,7 +355,7 @@ h += '<div class="grid grid-cols-3 gap-2 text-center mb-3">' + ['play','print','
 '<div class="svc rounded-xl p-2' + (r.type === t ? ' sel' : '') + '" onclick="setRoundType(' + i + ',\'' + t + '\')"><div class="font-bold text-xs">' + tName[t] + '</div></div>').join('') + '</div>';
 if (r.type === 'play') {
 h += '<div class="text-sm text-gray-700 space-y-3">';
-h += '<p class="text-gray-500 text-xs">入場 30 元 ➡️ 開場轉蛋 ➡️ 節奏遊戲 ➡️ 結尾轉蛋</p>';
+h += '<p class="text-gray-500 text-xs">基本費 60 元（入場 30＋基本卡 30）➡️ 開場轉蛋 ➡️ 節奏遊戲 ➡️ 結尾轉蛋</p>';
 h += stepRow(i, '開場轉蛋', 'gachaOpen', r.gachaOpen, '30 元/次，最多 4 次');
 h += stepRow(i, '結尾轉蛋 一般', 'gachaEnd', r.gachaEnd, '30 元/次');
 h += stepRow(i, '結尾轉蛋 全套模式', 'gachaEndFull', r.gachaEndFull, '90 元/次，與一般合計最多 2 次');
