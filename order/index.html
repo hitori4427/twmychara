@@ -146,50 +146,20 @@
 <!-- ============ 代刷 ============ -->
 <div id="panelGrind" class="hidden">
 <section class="bg-white rounded-2xl shadow p-4 mb-4">
-<div class="font-bold text-gray-700 mb-2">選擇機台與服務</div>
-<div class="grid grid-cols-3 gap-2 text-center">
-<div id="mPlay" class="svc rounded-xl p-3" onclick="setMachine('play')"><div class="font-bold text-sm">直機｜純遊玩</div></div>
-<div id="mPrint" class="svc rounded-xl p-3" onclick="setMachine('print')"><div class="font-bold text-sm">直機｜印友卡</div></div>
-<div id="mHori" class="svc rounded-xl p-3" onclick="setMachine('hori')"><div class="font-bold text-sm">橫機</div></div>
+<div class="flex items-center justify-between mb-2">
+<div class="font-bold text-gray-700">遊玩局數</div>
+<button type="button" onclick="addRound()" class="bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold px-3 py-1 rounded-xl text-sm">＋ 新增一局</button>
 </div>
+<p class="text-xs text-gray-400 mb-3">每一局分開設定、分開計價：先選這一局的玩法，再填這一局的內容。錄影也是以局計算（+10 元/局）。</p>
+<div id="rounds"></div>
 
-<!-- 純遊玩 -->
-<div id="gPlay" class="hidden mt-4 text-sm text-gray-700 space-y-3">
-<p class="text-gray-500">流程：入場（30 元）➡️ 開場轉蛋 ➡️ 節奏遊戲 ➡️ 結尾轉蛋</p>
-<div class="flex items-center justify-between"><span>開場轉蛋（30 元/次，最多 4 次）</span><span class="stepper" data-key="gachaOpen" data-max="4"></span></div>
-<div class="flex items-center justify-between"><span>結尾轉蛋 一般（30 元/次）</span><span class="stepper" data-key="gachaEnd" data-max="2"></span></div>
-<div class="flex items-center justify-between"><span>結尾轉蛋 全套模式（90 元/次，與一般合計最多 2 次）</span><span class="stepper" data-key="gachaEndFull" data-max="2"></span></div>
-<input id="wishSong" type="text" placeholder="許願曲目（可空，歌曲隨機）" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+<div class="mt-4 text-sm text-gray-700 space-y-3 border-t border-pink-100 pt-3">
+<input id="wishSong" type="text" placeholder="許願曲目（可空，歌曲隨機；套用到純遊玩的局）" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
 <input id="wishCard" type="text" placeholder="結尾卡面許願（如單人；版型不可指定）" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
 <select id="partner" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
 <option value="機台隨機">搭檔：使用機台隨機角色</option>
 <option value="自備友卡">搭檔：自備友卡（秘偶也接受，事後請至私訊提供電子友卡）</option>
 </select>
-</div>
-
-<!-- 印友卡 -->
-<div id="gPrint" class="hidden mt-4 text-sm text-gray-700 space-y-3">
-<p class="text-gray-500">入場 30 元 ＋ 印製 30 元/張。一局最多存 2 套衣服到衣櫥，最多 2 張可穿不同衣服。</p>
-<div class="flex items-center justify-between"><span>印製張數（每輪最多 4 張）</span><span class="stepper" data-key="printCount" data-max="4"></span></div>
-<select id="printOrient" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
-<option value="隨機">版式：未指定（隨機）</option>
-<option value="直式">版式：直式</option>
-<option value="橫式">版式：橫式</option>
-</select>
-<input id="printPose" type="text" placeholder="指定動作／版型（可空，未指定由賣方隨機挑選）" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
-</div>
-
-<!-- 橫機 -->
-<div id="gHori" class="hidden mt-4 text-sm text-gray-700 space-y-3">
-<p class="text-gray-500">遊玩後提供卡片照片（按順序排開）與遊戲總結畫面；不提供掉卡錄影。</p>
-<div class="flex items-center justify-between"><span>基本掉卡（30 元/張）</span><span class="stepper" data-key="horiBase" data-max="99"></span></div>
-<div class="flex items-center justify-between"><span>加購（30 元/張，最多 6 張）</span><span class="stepper" data-key="horiAdd" data-max="6"></span></div>
-</div>
-
-<!-- 共通加購 -->
-<div class="mt-4 text-sm text-gray-700 space-y-3 border-t border-pink-100 pt-3">
-<div class="flex items-center justify-between"><span>錄影（+10 元/局，存入 OneDrive 雲端）</span><span class="stepper" data-key="video" data-max="9"></span></div>
-<label class="flex items-center gap-2"><input id="outfitChange" type="checkbox" class="w-4 h-4 accent-pink-600"> 更換服裝（需至直機，另收一次入場費 30 元）</label>
 <label class="flex items-center gap-2"><input id="isNewbie" type="checkbox" class="w-4 h-4 accent-pink-600"> 我是新手（尚未遊玩過拜偶，玩過秘偶）</label>
 <div id="newbieNote" class="hidden bg-pink-50 rounded-xl p-3 text-xs leading-5">
 📌 新手注意事項：可「一次」調整角色設定（年齡、眼型、聲線等），即使不更改也請在備註告知選擇方式。<br>
@@ -203,7 +173,7 @@
 <span class="font-bold text-gray-700">預估總價</span>
 <span id="grindTotal" class="text-2xl font-bold text-pink-700">NT$ 0</span>
 </div>
-<p class="text-xs text-gray-400 mt-1">入場費已自動計入（直機每輪 30 元）。實際金額以賣家確認為準，採賣貨便貨到付款，未成功遊玩不收費。</p>
+<p class="text-xs text-gray-400 mt-1">依局數逐局加總（直機入場費每局 30 元）。實際金額以賣家確認為準，採賣貨便貨到付款，未成功遊玩不收費。</p>
 <label class="block font-bold text-gray-700 mt-3 mb-1">備註</label>
 <textarea id="grNote" rows="2" placeholder="其他需求…" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2"></textarea>
 <p class="text-xs text-pink-600 mt-2">⚠️ 代刷的帳號資料不用填在這裡：送出後請至粉專私訊傳帳號截圖給我們配對。</p>
@@ -254,13 +224,13 @@ const CATS = [
 { key:'hairColor', label:'頭髮顏色', opts:[['亮麗黑','%E4%BA%AE%E9%BA%97%E9%BB%91.jpg'],['黃鶯亞麻灰','%E4%BA%9E%E9%BA%BB%E7%81%B0.jpg'],['日光黃','%E6%97%A5%E5%85%89%E9%BB%83.jpg'],['幸運天藍','%E5%A4%A9%E8%97%8D.jpg'],['藍莓紫','%E8%97%8D%E8%8E%93%E7%B4%AB.jpg'],['奇幻粉紅','%E7%B2%89%E7%B4%85.jpg']]},
 { key:'highlight', label:'挑染', opts:[['無挑染',null],['細挑染','%E7%B4%B0%E6%8C%91%E6%9F%93.jpg']]},
 { key:'highlightColor', label:'挑染顏色', opts:[['亮麗黑','%E4%BA%AE%E9%BA%97%E9%BB%91.jpg'],['黃鶯亞麻灰','%E4%BA%9E%E9%BA%BB%E7%81%B0.jpg'],['日光黃','%E6%97%A5%E5%85%89%E9%BB%83.jpg'],['幸運天藍','%E5%A4%A9%E8%97%8D.jpg'],['藍莓紫','%E8%97%8D%E8%8E%93%E7%B4%AB.jpg'],['奇幻粉紅','%E7%B2%89%E7%B4%85.jpg']]},
-{ key:'makeup', label:'其他化妝', opts:[['無',null],['珍珠髮飾','%E7%8F%8D%E7%8F%A0%E9%AB%AE%E9%A3%BE.jpg'],['早熟女孩','%E6%97%A9%E7%86%9F%E5%A5%B3%E5%AD%A9.jpg'],['橢圓形眼鏡','%E6%A9%A2%E5%9C%93%E5%BD%A2%E7%9C%BC%E9%8F%A1.jpg']]},
+{ key:'makeup', multi:true, label:'其他化妝（可複選）', opts:[['無',null],['珍珠髮飾','%E7%8F%8D%E7%8F%A0%E9%AB%AE%E9%A3%BE.jpg'],['早熟女孩','%E6%97%A9%E7%86%9F%E5%A5%B3%E5%AD%A9.jpg'],['橢圓形眼鏡','%E6%A9%A2%E5%9C%93%E5%BD%A2%E7%9C%BC%E9%8F%A1.jpg']]},
 { key:'bracelet', label:'偶像公主手環', opts:[['陽葵款式','%E9%99%BD%E8%91%B5%E6%AC%BE%E5%BC%8F.jpg'],['美月款式','%E7%BE%8E%E6%9C%88%E6%AC%BE%E5%BC%8F.jpg'],['櫻款式','%E6%AB%BB%E6%AC%BE%E5%BC%8F.jpg']]},
 ];
 
 const picks = {}; // 創角選擇
-const counts = { gachaOpen:0, gachaEnd:0, gachaEndFull:0, printCount:1, horiBase:1, horiAdd:0, video:0};
-let machine = '';
+function newRound(type) { return { type: type || 'play', gachaOpen:0, gachaEnd:0, gachaEndFull:0, cards:[{orient:'隨機', pose:''}], horiBase:1, horiAdd:0, video:false }; }
+let rounds = [newRound('play')];
 const svcSel = { create: false, grind: false };
 let curAudio = null;
 
@@ -287,6 +257,19 @@ wrap.appendChild(sec);
 }
 function pick(el) {
 const cat = el.dataset.cat;
+const catDef = CATS.find(c => c.key === cat);
+if (catDef && catDef.multi) {
+const val = el.dataset.val;
+let arr = Array.isArray(picks[cat]) ? picks[cat] : [];
+if (val === '無') { arr = ['無']; }
+else {
+arr = arr.filter(v => v !== '無');
+if (arr.includes(val)) arr = arr.filter(v => v !== val); else arr.push(val);
+}
+picks[cat] = arr;
+document.querySelectorAll('[data-cat="' + cat + '"]').forEach(e => e.classList.toggle('sel', arr.includes(e.dataset.val)));
+return;
+}
 document.querySelectorAll('[data-cat="' + cat + '"]').forEach(e => e.classList.remove('sel'));
 el.classList.add('sel');
 picks[cat] = el.dataset.val;
@@ -314,62 +297,98 @@ document.getElementById('panelCreate').classList.toggle('hidden', !svcSel.create
 document.getElementById('panelGrind').classList.toggle('hidden', !svcSel.grind);
 updateGrand();
 }
-function setMachine(m) {
-machine = m;
-['Play','Print','Hori'].forEach(k => document.getElementById('m' + k).classList.remove('sel'));
-document.getElementById('gPlay').classList.add('hidden');
-document.getElementById('gPrint').classList.add('hidden');
-document.getElementById('gHori').classList.add('hidden');
-if (m === 'play') { document.getElementById('mPlay').classList.add('sel'); document.getElementById('gPlay').classList.remove('hidden');}
-if (m === 'print') { document.getElementById('mPrint').classList.add('sel'); document.getElementById('gPrint').classList.remove('hidden');}
-if (m === 'hori') { document.getElementById('mHori').classList.add('sel'); document.getElementById('gHori').classList.remove('hidden');}
-calcTotal();
+function roundPrice(r) {
+let t = 0;
+if (r.type === 'play') t = 30 + r.gachaOpen * 30 + r.gachaEnd * 30 + r.gachaEndFull * 90;
+if (r.type === 'print') t = 30 + r.cards.length * 30;
+if (r.type === 'hori') t = (r.horiBase + r.horiAdd) * 30;
+if (r.video) t += 10;
+return t;
 }
-function buildSteppers() {
-document.querySelectorAll('.stepper').forEach(sp => {
-const key = sp.dataset.key, max = +sp.dataset.max;
-sp.innerHTML = '<button type="button" class="bg-pink-100 rounded-lg font-bold text-pink-700">−</button>' +
-'<span class="inline-block w-10 text-center font-bold" id="cnt_' + key + '">' + counts[key] + '</span>' +
-'<button type="button" class="bg-pink-100 rounded-lg font-bold text-pink-700">＋</button>';
-const [minus,, plus] = sp.children;
-minus.onclick = () => { if (counts[key] > (key === 'printCount' || key === 'horiBase'? 1: 0)) counts[key]--; syncStepper(key);};
-plus.onclick = () => { if (counts[key] < max) counts[key]++; syncStepper(key);};
-});
-}
-function syncStepper(key) {
-document.getElementById('cnt_' + key).textContent = counts[key];
+function setRoundType(i, t) { rounds[i].type = t; renderRounds(); }
+function addRound() { if (rounds.length < 8) rounds.push(newRound('play')); renderRounds(); }
+function removeRound(i) { if (rounds.length > 1) rounds.splice(i, 1); renderRounds(); }
+function rStep(i, key, delta) {
+const r = rounds[i];
+const lim = { gachaOpen:[0,4], gachaEnd:[0,2], gachaEndFull:[0,2], horiBase:[1,10], horiAdd:[0,6] }[key];
+r[key] = Math.min(lim[1], Math.max(lim[0], r[key] + delta));
 if (key === 'gachaEnd' || key === 'gachaEndFull') {
-// 結尾轉蛋一般+全套合計最多 2 次
-if (counts.gachaEnd + counts.gachaEndFull > 2) {
-if (key === 'gachaEnd') counts.gachaEndFull = Math.max(0, 2 - counts.gachaEnd);
-else counts.gachaEnd = Math.max(0, 2 - counts.gachaEndFull);
-document.getElementById('cnt_gachaEnd').textContent = counts.gachaEnd;
-document.getElementById('cnt_gachaEndFull').textContent = counts.gachaEndFull;
+const other = key === 'gachaEnd' ? 'gachaEndFull' : 'gachaEnd';
+if (r.gachaEnd + r.gachaEndFull > 2) r[other] = 2 - r[key];
 }
+renderRounds();
 }
+function addCard(i) { if (rounds[i].cards.length < 4) rounds[i].cards.push({ orient:'隨機', pose:'' }); renderRounds(); }
+function removeCard(i, k) { if (rounds[i].cards.length > 1) rounds[i].cards.splice(k, 1); renderRounds(); }
+function setCardField(i, k, field, val) { rounds[i].cards[k][field] = val; }
+function setVideo(i, on) { rounds[i].video = on; calcTotal(); }
+function stepRow(i, label, key, val, note) {
+return '<div class="flex items-center justify-between"><span>' + label + (note ? ' <span class="text-gray-400 text-xs">' + note + '</span>' : '') + '</span>' +
+'<span class="stepper"><button type="button" class="bg-pink-100 rounded-lg font-bold text-pink-700" onclick="rStep(' + i + ',\'' + key + '\',-1)">−</button>' +
+'<span class="inline-block w-10 text-center font-bold">' + val + '</span>' +
+'<button type="button" class="bg-pink-100 rounded-lg font-bold text-pink-700" onclick="rStep(' + i + ',\'' + key + '\',1)">＋</button></span></div>';
+}
+function renderRounds() {
+const wrap = document.getElementById('rounds');
+if (!wrap) return;
+const tName = { play:'直機｜純遊玩', print:'直機｜印友卡', hori:'橫機' };
+wrap.innerHTML = rounds.map((r, i) => {
+let h = '<div class="border-2 border-pink-100 rounded-2xl p-3 mb-3">';
+h += '<div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-700">第 ' + (i + 1) + ' 局</span><span class="flex items-center gap-2">';
+h += '<span class="font-bold text-pink-700">NT$ ' + roundPrice(r) + '</span>';
+if (rounds.length > 1) h += '<button type="button" class="text-xs text-gray-400 underline" onclick="removeRound(' + i + ')">刪除</button>';
+h += '</span></div>';
+h += '<div class="grid grid-cols-3 gap-2 text-center mb-3">' + ['play','print','hori'].map(t =>
+'<div class="svc rounded-xl p-2' + (r.type === t ? ' sel' : '') + '" onclick="setRoundType(' + i + ',\'' + t + '\')"><div class="font-bold text-xs">' + tName[t] + '</div></div>').join('') + '</div>';
+if (r.type === 'play') {
+h += '<div class="text-sm text-gray-700 space-y-3">';
+h += '<p class="text-gray-500 text-xs">入場 30 元 ➡️ 開場轉蛋 ➡️ 節奏遊戲 ➡️ 結尾轉蛋</p>';
+h += stepRow(i, '開場轉蛋', 'gachaOpen', r.gachaOpen, '30 元/次，最多 4 次');
+h += stepRow(i, '結尾轉蛋 一般', 'gachaEnd', r.gachaEnd, '30 元/次');
+h += stepRow(i, '結尾轉蛋 全套模式', 'gachaEndFull', r.gachaEndFull, '90 元/次，與一般合計最多 2 次');
+h += '</div>';
+}
+if (r.type === 'print') {
+h += '<div class="text-sm text-gray-700 space-y-2">';
+h += '<p class="text-gray-500 text-xs">入場 30 元 ＋ 印製 30 元/張，每張可各自選直式／橫式。一局最多存 2 套衣服，想換衣服再印請新增一局。</p>';
+r.cards.forEach((c, k) => {
+h += '<div class="flex items-center gap-2"><span class="text-xs font-bold whitespace-nowrap">第 ' + (k + 1) + ' 張</span>' +
+'<select class="border-2 border-pink-200 rounded-xl px-2 py-1" onchange="setCardField(' + i + ',' + k + ',\'orient\',this.value)">' +
+['隨機','直式','橫式'].map(o => '<option value="' + o + '"' + (c.orient === o ? ' selected' : '') + '>' + o + '</option>').join('') + '</select>' +
+'<input type="text" placeholder="指定動作／版型（可空）" value="' + c.pose.replace(/"/g, '&quot;') + '" oninput="setCardField(' + i + ',' + k + ',\'pose\',this.value)" class="flex-1 border-2 border-pink-200 rounded-xl px-2 py-1 min-w-0">' +
+(r.cards.length > 1 ? '<button type="button" class="text-gray-400 text-sm" onclick="removeCard(' + i + ',' + k + ')">✕</button>' : '') + '</div>';
+});
+if (r.cards.length < 4) h += '<button type="button" class="text-pink-700 font-bold text-xs" onclick="addCard(' + i + ')">＋ 再加一張（最多 4 張）</button>';
+h += '</div>';
+}
+if (r.type === 'hori') {
+h += '<div class="text-sm text-gray-700 space-y-3">';
+h += '<p class="text-gray-500 text-xs">遊玩後提供卡片照片（按順序排開）與遊戲總結畫面；不提供掉卡錄影。</p>';
+h += stepRow(i, '基本掉卡', 'horiBase', r.horiBase, '30 元/張');
+h += stepRow(i, '加購', 'horiAdd', r.horiAdd, '30 元/張，最多 6 張');
+h += '</div>';
+}
+h += '<label class="flex items-center gap-2 mt-3 text-sm text-gray-700"><input type="checkbox" class="w-4 h-4 accent-pink-600" ' + (r.video ? 'checked' : '') + ' onchange="setVideo(' + i + ',this.checked)"> 本局錄影（+10 元，存入 OneDrive 雲端）</label>';
+h += '</div>';
+return h;
+}).join('');
 calcTotal();
 }
 function grindAmount() {
-let t = 0;
-if (svcSel.grind && machine) {
-t += 30; // 入場費（橫機基本掉卡本身即含遊玩，仍照價目以入場概念顯示於明細）
-if (machine === 'play') t += counts.gachaOpen * 30 + counts.gachaEnd * 30 + counts.gachaEndFull * 90 - 30 + 30; // 入場30已計
-if (machine === 'print') t += counts.printCount * 30;
-if (machine === 'hori') t += counts.horiBase * 30 + counts.horiAdd * 30 - 30; // 橫機無入場費，扣回
-t += counts.video * 10;
-if (document.getElementById('outfitChange').checked) t += 30;
-}
-return t;
+if (!svcSel.grind) return 0;
+return rounds.reduce((a, r) => a + roundPrice(r), 0);
 }
 function calcTotal() {
 const t = grindAmount();
-document.getElementById('grindTotal').textContent = 'NT$ ' + t;
+const el = document.getElementById('grindTotal');
+if (el) el.textContent = 'NT$ ' + t;
 updateGrand();
 return t;
 }
 function updateGrand() {
 const total = (svcSel.create ? 60 : 0) + grindAmount();
 const line = document.getElementById('grandLine');
+if (!line) return;
 if (svcSel.create || svcSel.grind) {
 line.classList.remove('hidden');
 document.getElementById('grandTotal').textContent = 'NT$ ' + total;
@@ -377,9 +396,9 @@ document.getElementById('grandTotal').textContent = 'NT$ ' + total;
 line.classList.add('hidden');
 }
 }
-document.addEventListener('change', e => { if (e.target.id === 'outfitChange') calcTotal(); if (e.target.id === 'isNewbie') document.getElementById('newbieNote').classList.toggle('hidden',!e.target.checked);});
+document.addEventListener('change', e => { if (e.target.id === 'isNewbie') document.getElementById('newbieNote').classList.toggle('hidden', !e.target.checked); });
 
-function err(msg) { const e = document.getElementById('errMsg'); e.textContent = msg; e.classList.remove('hidden'); window.scrollTo(0, document.body.scrollHeight);}
+function err(msg) { const e = document.getElementById('errMsg'); e.textContent = msg; e.classList.remove('hidden'); window.scrollTo(0, document.body.scrollHeight); }
 function buildPayloads() {
 const orderId = document.getElementById('orderId').value.trim();
 if (!orderId) return err('請先填賣貨便訂單編號'), null;
@@ -390,11 +409,12 @@ const d = { time: new Date().toISOString(), orderId, service: 'create' };
 d.name = document.getElementById('chName').value.trim();
 d.birthday = document.getElementById('chBirth').value;
 d.age = document.getElementById('chAge').value;
-if (!d.name ||!d.birthday ||!d.age) return err('創角的基本資料（名字、生日、年齡）都要填喔'), null;
+if (!d.name || !d.birthday || !d.age) return err('創角的基本資料（名字、生日、年齡）都要填喔'), null;
 for (const cat of CATS) {
-if (cat.key === 'highlightColor' && picks['highlight']!== '細挑染') continue;
-if (!picks[cat.key]) return err('還沒選：' + cat.label), null;
-d[cat.key] = picks[cat.key];
+if (cat.key === 'highlightColor' && picks['highlight'] !== '細挑染') continue;
+const v = picks[cat.key];
+if (!v || (Array.isArray(v) && !v.length)) return err('還沒選：' + cat.label), null;
+d[cat.key] = Array.isArray(v) ? v.join('、') : v;
 }
 d.total = 60;
 d.note = document.getElementById('chNote').value.trim();
@@ -402,19 +422,35 @@ out.push(d);
 }
 if (svcSel.grind) {
 const d = { time: new Date().toISOString(), orderId, service: 'grind' };
-if (!machine) return err('請先選機台與服務'), null;
-d.machine = machine;
-Object.assign(d, counts);
+d.rounds = JSON.parse(JSON.stringify(rounds));
+const tName = { play:'直機｜純遊玩', print:'直機｜印友卡', hori:'橫機' };
+d.machine = rounds.map(r => tName[r.type]).join(' ＋ ');
+d.gachaOpen = rounds.reduce((a, r) => a + (r.type === 'play' ? r.gachaOpen : 0), 0);
+d.gachaEnd = rounds.reduce((a, r) => a + (r.type === 'play' ? r.gachaEnd : 0), 0);
+d.gachaEndFull = rounds.reduce((a, r) => a + (r.type === 'play' ? r.gachaEndFull : 0), 0);
+d.printCount = rounds.reduce((a, r) => a + (r.type === 'print' ? r.cards.length : 0), 0);
+d.printOrient = rounds.map((r, i) => r.type === 'print' ? '第' + (i + 1) + '局：' + r.cards.map(c => c.orient).join('、') : '').filter(Boolean).join('；');
+d.printPose = rounds.map((r, i) => r.type === 'print' ? r.cards.map((c, k) => c.pose ? '第' + (i + 1) + '局第' + (k + 1) + '張：' + c.pose : '').filter(Boolean).join('、') : '').filter(Boolean).join('；');
+d.horiBase = rounds.reduce((a, r) => a + (r.type === 'hori' ? r.horiBase : 0), 0);
+d.horiAdd = rounds.reduce((a, r) => a + (r.type === 'hori' ? r.horiAdd : 0), 0);
+d.video = rounds.filter(r => r.video).length;
+d.outfitChange = false;
 d.wishSong = document.getElementById('wishSong').value.trim();
 d.wishCard = document.getElementById('wishCard').value.trim();
 d.partner = document.getElementById('partner').value;
-d.printOrient = document.getElementById('printOrient').value;
-d.printPose = document.getElementById('printPose').value.trim();
-d.outfitChange = document.getElementById('outfitChange').checked;
 d.isNewbie = document.getElementById('isNewbie').checked;
-if (d.isNewbie && machine === 'print') return err('提醒：初次遊玩尚無法印友卡，請先選「純遊玩」完成一輪喔'), null;
+if (d.isNewbie && rounds.some(r => r.type === 'print')) return err('提醒：初次遊玩尚無法印友卡，請先把印友卡的局改成「純遊玩」完成一輪喔'), null;
 d.total = grindAmount();
-d.note = document.getElementById('grNote').value.trim();
+const userNote = document.getElementById('grNote').value.trim();
+const detail = rounds.map((r, i) => {
+let x = '第' + (i + 1) + '局 ' + tName[r.type];
+if (r.type === 'play') x += '（開' + r.gachaOpen + '／結' + r.gachaEnd + '／全套' + r.gachaEndFull + '）';
+if (r.type === 'print') x += '（' + r.cards.length + '張：' + r.cards.map(c => c.orient).join('、') + '）';
+if (r.type === 'hori') x += '（基本' + r.horiBase + '＋加購' + r.horiAdd + '）';
+if (r.video) x += '＋錄影';
+return x;
+}).join('；');
+d.note = '【局數明細】' + detail + (userNote ? '｜' + userNote : '');
 out.push(d);
 }
 return out;
@@ -431,21 +467,21 @@ const names = { face:'臉型', voice:'聲線', skin:'膚色', eyes:'眼睛顏色
 for (const k in names) if (d[k]) L.push(names[k] + '：' + d[k]);
 if (d.note) L.push('備註：' + d.note);
 } else {
-const mName = { play:'直機｜純遊玩', print:'直機｜印友卡', hori:'橫機'};
-L.push('服務：代刷帳號（' + mName[d.machine] + '）');
-if (d.machine === 'play') {
-L.push('開場轉蛋：' + d.gachaOpen + ' 次｜結尾轉蛋一般：' + d.gachaEnd + ' 次｜全套：' + d.gachaEndFull + ' 次');
+const tName = { play:'直機｜純遊玩', print:'直機｜印友卡', hori:'橫機' };
+L.push('服務：代刷帳號（共 ' + d.rounds.length + ' 局）');
+d.rounds.forEach((r, i) => {
+let x = '第 ' + (i + 1) + ' 局｜' + tName[r.type] + '：';
+if (r.type === 'play') x += '開場轉蛋 ' + r.gachaOpen + ' 次、結尾轉蛋一般 ' + r.gachaEnd + ' 次、全套 ' + r.gachaEndFull + ' 次';
+if (r.type === 'print') x += r.cards.map((c, k) => '第' + (k + 1) + '張 ' + c.orient + (c.pose ? '（' + c.pose + '）' : '')).join('、');
+if (r.type === 'hori') x += '基本掉卡 ' + r.horiBase + ' 張、加購 ' + r.horiAdd + ' 張';
+if (r.video) x += '、含錄影';
+L.push(x);
+});
 if (d.wishSong) L.push('許願曲目：' + d.wishSong);
 if (d.wishCard) L.push('卡面許願：' + d.wishCard);
-L.push('搭檔：' + d.partner);
-}
-if (d.machine === 'print') { L.push('印製張數：' + d.printCount + '｜版式：' + d.printOrient); if (d.printPose) L.push('指定動作／版型：' + d.printPose);}
-if (d.machine === 'hori') L.push('基本掉卡：' + d.horiBase + ' 張｜加購：' + d.horiAdd + ' 張');
-if (d.video) L.push('錄影：' + d.video + ' 局');
-if (d.outfitChange) L.push('更換服裝：是');
+if (d.rounds.some(r => r.type === 'play')) L.push('搭檔：' + d.partner);
 if (d.isNewbie) L.push('新手：是');
 L.push('預估總價：NT$ ' + d.total);
-if (d.note) L.push('備註：' + d.note);
 L.push('（帳號截圖我會另外傳給你們配對）');
 }
 return L.join('\n');
@@ -479,7 +515,7 @@ s.select();
 navigator.clipboard.writeText(s.value);
 }
 buildPickers();
-buildSteppers();
+renderRounds();
 toggleHighlightColor();
 </script>
 </body>
