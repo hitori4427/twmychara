@@ -158,6 +158,10 @@
 <label class="block font-bold text-gray-700 mb-1">備註</label>
 <textarea id="chNote" rows="2" placeholder="其他想交代的設定細節…" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2"></textarea>
 </section>
+<section class="bg-white rounded-2xl shadow p-4 mb-4">
+<label class="block font-bold text-gray-700 mb-1">帳號 ID（選填）</label>
+<input id="createAccountId" type="text" placeholder="要創角的帳號 ID／名稱，沒有可不填" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+</section>
 </div>
 
 <!-- ============ 代刷 ============ -->
@@ -219,8 +223,8 @@
 <div id="result" class="hidden mt-4">
 <p class="text-sm font-bold text-gray-700 mb-1">✅ 已送出！請複製下面摘要，貼回粉專私訊給我們對單：</p>
 <p class="text-sm text-gray-600 mb-2">🛒 還沒下單嗎？照摘要最後的「賣貨便這樣買」到<a href="https://myship.7-11.com.tw/general/detail/GM2611028968410" target="_blank" rel="noopener" class="underline font-bold">賣貨便賣場</a>組購物車結帳就好。</p>
-<a id="msgrBtn" href="https://m.me/797673740092380" target="_blank" rel="noopener" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl mb-2">💬 打開粉專私訊，確認後送出</a>
-<p class="text-xs text-gray-400 mb-2">點按鈕會打開與粉專的 Messenger 對話，摘要會自動帶入輸入框（若你的版本沒自動帶入，貼上剛複製的摘要即可）。</p>
+<a id="msgrBtn" href="https://m.me/797673740092380" target="_blank" rel="noopener" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl mb-2">💬 打開粉專私訊（摘要自動帶入，確認後送出）</a>
+<p class="text-xs text-gray-400 mb-2">兩種傳法都可以：① 點上面的按鈕，摘要會自動帶入對話框，確認後送出；② 或按下方「複製摘要」自己複製，再到私訊貼上送出（若按鈕沒有自動帶入文字，就用這個方法）。</p>
 <div id="previewArea" class="mb-3"></div>
 <textarea id="summary" rows="10" readonly class="w-full border-2 border-pink-200 rounded-xl px-3 py-2 text-sm"></textarea>
 <button onclick="copySummary()" class="mt-2 w-full bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold py-2 rounded-xl">複製摘要</button>
@@ -450,6 +454,8 @@ d[cat.key] = Array.isArray(v) ? v.join('、') : v;
 }
 d.total = 60;
 d.note = document.getElementById('chNote').value.trim();
+d.accountId = document.getElementById('createAccountId').value.trim();
+if (d.accountId) d.note = (d.note ? d.note + '｜' : '') + '帳號ID：' + d.accountId;
 out.push(d);
 }
 if (svcSel.grind) {
@@ -499,7 +505,8 @@ L.push('服務：創角');
 L.push('名字：' + d.name + '｜生日：' + d.birthday + '｜年齡：' + d.age);
 const names = { face:'臉型', voice:'聲線', skin:'膚色', eyes:'眼睛顏色', bangs:'瀏海', backHair:'後方髮型', hairColor:'頭髮顏色', highlight:'挑染', highlightColor:'挑染顏色', makeup:'其他化妝', bracelet:'手環'};
 for (const k in names) if (d[k]) L.push(names[k] + '：' + d[k]);
-if (d.note) L.push('備註：' + d.note);
+if (d.accountId) L.push('帳號ID：' + d.accountId);
+if (d.note && d.note !== ('帳號ID：' + d.accountId)) L.push('備註：' + d.note);
 } else {
 const tName = { play:'直機｜純遊玩', print:'直機｜印友卡', hori:'橫機' };
 L.push('服務：代刷帳號（共 ' + d.rounds.length + ' 局）');
@@ -619,7 +626,7 @@ navigator.clipboard.writeText(s.value);
 }
 // ===== 自動存檔（切去賣貨便再回來不用重填） =====
 const SAVE_KEY = 'aipri-intake-v2';
-const FIELD_IDS = ['chName','chBirth','chAge','chNote','wishSong','wishCard','partner','grNote','orderId','accountId'];
+const FIELD_IDS = ['chName','chBirth','chAge','chNote','createAccountId','wishSong','wishCard','partner','grNote','orderId','accountId'];
 function saveState() {
 try {
 const st = { svcSel, picks, rounds, fields: {}, checks: {} };
