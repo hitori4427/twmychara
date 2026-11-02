@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Nijigen Stardust｜客製服務申請</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background: #fdf2f8;}
+.opt { cursor: pointer; border: 3px solid transparent; border-radius: 12px; transition: all.15s; background:#fff;}
+.opt:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(219,39,119,.18);}
+.opt.sel { border-color: #db2777; box-shadow: 0 4px 14px rgba(219,39,119,.35);}
+.opt img { border-radius: 8px; width: 100%; height: auto; display: block;}
+.svc { cursor: pointer; border: 3px solid #fbcfe8; transition: all.15s;}
+.svc.sel { border-color: #db2777; background: #fff1f2;}
+input[type=text], input[type=number], input[type=date], textarea, select { outline: none;}
+input:focus, textarea:focus, select:focus { border-color: #db2777!important; box-shadow: 0 0 0 3px rgba(219,39,119,.15);}
+.stepper button { width: 36px; height: 36px;}
+</style>
+</head>
+<body class="min-h-screen">
+<div class="max-w-3xl mx-auto px-4 py-6">
+
+<header class="text-center mb-6">
+<h1 class="text-2xl font-bold text-pink-700">✨ 客製服務申請 ✨</h1>
+<p class="text-sm text-gray-600 mt-1">Play Nijigen Stardust｜創角・代刷 申請表</p>
+<p class="text-xs text-gray-500 mt-2">請先填寫賣貨便訂單編號，再選擇服務。送出後資料會傳給賣家，<br>同時請把送出後產生的摘要貼回粉專私訊，方便我們對單 🩵</p>
+</header>
+
+<!-- 共通：訂單編號 -->
+<section class="bg-white rounded-2xl shadow p-4 mb-4">
+<label class="block font-bold text-gray-700 mb-1">賣貨便訂單編號 <span class="text-pink-600">*</span></label>
+<input id="orderId" type="text" placeholder="例如 CM2610066926238" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+<p class="text-xs text-gray-400 mt-1">在賣貨便「訂單明細」裡可以找到，以 CM 開頭。</p>
+</section>
+
+<!-- 服務選擇 -->
+<section class="grid grid-cols-2 gap-3 mb-4">
+<div id="svcCreate" class="svc rounded-2xl bg-white shadow p-4 text-center" onclick="setService('create')">
+<div class="text-3xl mb-1">🎀</div>
+<div class="font-bold text-gray-700">創角</div>
+<div class="text-xs text-gray-500 mt-1">幫你開一個全新帳號<br>名字・生日・年齡・初始造型</div>
+</div>
+<div id="svcGrind" class="svc rounded-2xl bg-white shadow p-4 text-center" onclick="setService('grind')">
+<div class="text-3xl mb-1">🎮</div>
+<div class="font-bold text-gray-700">代刷帳號</div>
+<div class="text-xs text-gray-500 mt-1">用你的帳號代為遊玩<br>照價目表勾選項目</div>
+</div>
+</section>
+
+<!-- ============ 創角 ============ -->
+<div id="panelCreate" class="hidden">
+<section class="bg-white rounded-2xl shadow p-4 mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+<div>
+<label class="block font-bold text-gray-700 mb-1">角色名字 <span class="text-pink-600">*</span></label>
+<input id="chName" type="text" placeholder="例如 リン☆" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+</div>
+<div>
+<label class="block font-bold text-gray-700 mb-1">生日 <span class="text-pink-600">*</span></label>
+<input id="chBirth" type="date" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+</div>
+<div>
+<label class="block font-bold text-gray-700 mb-1">年齡 <span class="text-pink-600">*</span></label>
+<input id="chAge" type="number" min="1" max="99" placeholder="例如 16" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+</div>
+</section>
+<div id="pickers"></div>
+<section class="bg-white rounded-2xl shadow p-4 mb-4">
+<label class="block font-bold text-gray-700 mb-1">備註</label>
+<textarea id="chNote" rows="2" placeholder="其他想交代的設定細節…" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2"></textarea>
+</section>
+</div>
+
+<!-- ============ 代刷 ============ -->
+<div id="panelGrind" class="hidden">
+<section class="bg-white rounded-2xl shadow p-4 mb-4">
+<div class="font-bold text-gray-700 mb-2">選擇機台與服務</div>
+<div class="grid grid-cols-3 gap-2 text-center">
+<div id="mPlay" class="svc rounded-xl p-3" onclick="setMachine('play')"><div class="font-bold text-sm">直機｜純遊玩</div></div>
+<div id="mPrint" class="svc rounded-xl p-3" onclick="setMachine('print')"><div class="font-bold text-sm">直機｜印友卡</div></div>
+<div id="mHori" class="svc rounded-xl p-3" onclick="setMachine('hori')"><div class="font-bold text-sm">橫機</div></div>
+</div>
+
+<!-- 純遊玩 -->
+<div id="gPlay" class="hidden mt-4 text-sm text-gray-700 space-y-3">
+<p class="text-gray-500">流程：入場（30 元）➡️ 開場轉蛋 ➡️ 節奏遊戲 ➡️ 結尾轉蛋</p>
+<div class="flex items-center justify-between"><span>開場轉蛋（30 元/次，最多 4 次）</span><span class="stepper" data-key="gachaOpen" data-max="4"></span></div>
+<div class="flex items-center justify-between"><span>結尾轉蛋 一般（30 元/次）</span><span class="stepper" data-key="gachaEnd" data-max="2"></span></div>
+<div class="flex items-center justify-between"><span>結尾轉蛋 全套模式（90 元/次，與一般合計最多 2 次）</span><span class="stepper" data-key="gachaEndFull" data-max="2"></span></div>
+<input id="wishSong" type="text" placeholder="許願曲目（可空，歌曲隨機）" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+<input id="wishCard" type="text" placeholder="結尾卡面許願（如單人；版型不可指定）" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+<select id="partner" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+<option value="機台隨機">搭檔：使用機台隨機角色</option>
+<option value="自備友卡">搭檔：自備友卡（秘偶也接受，事後請至私訊提供電子友卡）</option>
+</select>
+</div>
+
+<!-- 印友卡 -->
+<div id="gPrint" class="hidden mt-4 text-sm text-gray-700 space-y-3">
+<p class="text-gray-500">入場 30 元 ＋ 印製 30 元/張。一局最多存 2 套衣服到衣櫥，最多 2 張可穿不同衣服。</p>
+<div class="flex items-center justify-between"><span>印製張數（每輪最多 4 張）</span><span class="stepper" data-key="printCount" data-max="4"></span></div>
+<select id="printOrient" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+<option value="隨機">版式：未指定（隨機）</option>
+<option value="直式">版式：直式</option>
+<option value="橫式">版式：橫式</option>
+</select>
+<input id="printPose" type="text" placeholder="指定動作／版型（可空，未指定由賣方隨機挑選）" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2">
+</div>
+
+<!-- 橫機 -->
+<div id="gHori" class="hidden mt-4 text-sm text-gray-700 space-y-3">
+<p class="text-gray-500">遊玩後提供卡片照片（按順序排開）與遊戲總結畫面；不提供掉卡錄影。</p>
+<div class="flex items-center justify-between"><span>基本掉卡（30 元/張）</span><span class="stepper" data-key="horiBase" data-max="99"></span></div>
+<div class="flex items-center justify-between"><span>加購（30 元/張，最多 6 張）</span><span class="stepper" data-key="horiAdd" data-max="6"></span></div>
+</div>
+
+<!-- 共通加購 -->
+<div class="mt-4 text-sm text-gray-700 space-y-3 border-t border-pink-100 pt-3">
+<div class="flex items-center justify-between"><span>錄影（+10 元/局，存入 OneDrive 雲端）</span><span class="stepper" data-key="video" data-max="9"></span></div>
+<label class="flex items-center gap-2"><input id="outfitChange" type="checkbox" class="w-4 h-4 accent-pink-600"> 更換服裝（需至直機，另收一次入場費 30 元）</label>
+<label class="flex items-center gap-2"><input id="isNewbie" type="checkbox" class="w-4 h-4 accent-pink-600"> 我是新手（尚未遊玩過拜偶，玩過秘偶）</label>
+<div id="newbieNote" class="hidden bg-pink-50 rounded-xl p-3 text-xs leading-5">
+📌 新手注意事項：可「一次」調整角色設定（年齡、眼型、聲線等），即使不更改也請在備註告知選擇方式。<br>
+‼️ 初次遊玩尚無法印友卡，需完成一輪遊玩後才可使用此功能。
+</div>
+</div>
+</section>
+
+<section class="bg-white rounded-2xl shadow p-4 mb-4">
+<div class="flex items-center justify-between">
+<span class="font-bold text-gray-700">預估總價</span>
+<span id="grindTotal" class="text-2xl font-bold text-pink-700">NT$ 0</span>
+</div>
+<p class="text-xs text-gray-400 mt-1">入場費已自動計入（直機每輪 30 元）。實際金額以賣家確認為準，採預先收費制，未成功遊玩即時退款。</p>
+<label class="block font-bold text-gray-700 mt-3 mb-1">備註</label>
+<textarea id="grNote" rows="2" placeholder="其他需求…" class="w-full border-2 border-pink-200 rounded-xl px-3 py-2"></textarea>
+<p class="text-xs text-pink-600 mt-2">⚠️ 代刷的帳號資料不用填在這裡：送出後請至粉專私訊傳帳號截圖給我們配對。</p>
+</section>
+</div>
+
+<!-- 送出 -->
+<section class="bg-white rounded-2xl shadow p-4 mb-4">
+<button id="submitBtn" onclick="submitForm()" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl text-lg">送出申請</button>
+<div id="result" class="hidden mt-4">
+<p class="text-sm font-bold text-gray-700 mb-1">✅ 已送出！請複製下面摘要，貼回粉專私訊給我們對單：</p>
+<textarea id="summary" rows="10" readonly class="w-full border-2 border-pink-200 rounded-xl px-3 py-2 text-sm"></textarea>
+<button onclick="copySummary()" class="mt-2 w-full bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold py-2 rounded-xl">複製摘要</button>
+</div>
+<p id="errMsg" class="hidden text-sm text-red-600 mt-2"></p>
+</section>
+
+<footer class="text-xs text-gray-500 leading-5 bg-white/60 rounded-2xl p-4">
+<p class="font-bold text-gray-600 mb-1">交易須知</p>
+<p>1. 卡片皆會裝入卡套由人工帶回，機台掉卡或影印默認初傷，完美主義者請斟酌。</p>
+<p>2. 預計 11 月回國後統一使用賣貨便寄出 🩵</p>
+<p>3. 採「預先收費」制度，未成功遊玩即時退款。</p>
+<p>4. 轉蛋隨機選出的部位，盡量會拿不重複的。</p>
+</footer>
+</div>
+
+<script>
+// ===== 後台端點：Apps Script 部署後把網址貼在這裡（空字串時僅產生摘要） =====
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkhK2sDgVJqWaTVX92Mni5P6MF2CgZWzGVwdg7crGyhV1wzJPan7IWNTi3d58fxg/exec';
+
+const IMG = 'https://hitori4427.github.io/TW-aipri/';
+const AUD = 'https://hitori4427.github.io/twmychara/';
+const CATS = [
+{ key:'face', label:'臉型', opts:[['少女','%E5%B0%91%E5%A5%B3.jpg'],['活力','%E6%B4%BB%E5%8A%9B.jpg'],['柔和','%E6%9F%94%E5%92%8C.jpg'],['認真','%E8%AA%8D%E7%9C%9F.jpg'],['強勢','%E5%BC%B7%E5%8B%A2.jpg'],['美艷','%E7%BE%8E%E8%89%B7.jpg'],['浪漫','%E6%B5%AA%E6%BC%AB.jpg'],['神秘','%E7%A5%9E%E7%A7%98.jpg']]},
+{ key:'voice', label:'聲線（點 ▶ 可試聽）', audio:true, opts:[['活潑','%E6%B4%BB%E6%BD%91.jpg','%E6%B4%BB%E6%BD%91.mp3'],['溫柔','%E6%BA%AB%E6%9F%94.jpg','%E6%BA%AB%E6%9F%94.mp3'],['直率','%E7%9B%B4%E7%8E%87.jpg','%E7%9B%B4%E7%8E%87.mp3'],['酷炫','%E9%85%B7%E7%82%AB.jpg','%E9%85%B7%E7%82%AB.mp3'],['優雅','%E5%84%AA%E9%9B%85.jpg','%E5%84%AA%E9%9B%85.mp3'],['可愛','%E5%8F%AF%E6%84%9B.jpg','%E5%8F%AF%E6%84%9B.mp3']]},
+{ key:'skin', label:'膚色', opts:[['膚色A','A.jpg'],['膚色B','B.jpg'],['膚色C','C.jpg'],['膚色D','D.jpg'],['膚色E','E.jpg'],['膚色F','F.jpg']]},
+{ key:'eyes', label:'眼睛顏色', opts:[['寧靜木質','%E5%AF%A7%E9%9D%9C%E6%9C%A8%E8%B3%AA.jpg'],['純淨海洋','%E7%B4%94%E6%B7%A8%E6%B5%B7%E6%B4%8B.jpg'],['甜美櫻桃','%E7%94%9C%E7%BE%8E%E6%AB%BB%E6%A1%83.jpg'],['閃耀薄荷','%E9%96%83%E8%80%80%E8%96%84%E8%8D%B7.jpg']]},
+{ key:'bangs', label:'瀏海', opts:[['洋娃娃瀏海','%E6%B4%8B%E5%A8%83%E5%A8%83%E7%80%8F%E6%B5%B7.jpg'],['清爽斜瀏海','%E6%B8%85%E7%88%BD%E6%96%9C%E7%80%8F%E6%B5%B7.jpg'],['帥氣造型','%E5%B8%A5%E6%B0%A3%E9%80%A0%E5%9E%8B.jpg']]},
+{ key:'backHair', label:'後方髮型', opts:[['俏皮可愛雙馬尾','%E4%BF%8F%E7%9A%AE%E5%8F%AF%E6%84%9B%E9%9B%99%E9%A6%AC%E5%B0%BE.jpg'],['俐落短髮','%E4%BF%90%E8%90%BD%E7%9F%AD%E9%AB%AE.jpg'],['自然鮑伯頭','%E8%87%AA%E7%84%B6%E9%AE%91%E4%BC%AF%E9%A0%AD.jpg'],['令人憧憬的長髮','%E4%BB%A4%E4%BA%BA%E6%86%A7%E6%86%AC%E7%9A%84%E9%95%B7%E9%AB%AE.jpg'],['純潔側馬尾','%E7%B4%94%E6%BD%94%E5%81%B4%E9%A6%AC%E5%B0%BE.jpg']]},
+{ key:'hairColor', label:'頭髮顏色', opts:[['亮麗黑','%E4%BA%AE%E9%BA%97%E9%BB%91.jpg'],['黃鶯亞麻灰','%E4%BA%9E%E9%BA%BB%E7%81%B0.jpg'],['日光黃','%E6%97%A5%E5%85%89%E9%BB%83.jpg'],['幸運天藍','%E5%A4%A9%E8%97%8D.jpg'],['藍莓紫','%E8%97%8D%E8%8E%93%E7%B4%AB.jpg'],['奇幻粉紅','%E7%B2%89%E7%B4%85.jpg']]},
+{ key:'highlight', label:'挑染', opts:[['無挑染',null],['細挑染','%E7%B4%B0%E6%8C%91%E6%9F%93.jpg']]},
+{ key:'highlightColor', label:'挑染顏色', opts:[['亮麗黑','%E4%BA%AE%E9%BA%97%E9%BB%91.jpg'],['黃鶯亞麻灰','%E4%BA%9E%E9%BA%BB%E7%81%B0.jpg'],['日光黃','%E6%97%A5%E5%85%89%E9%BB%83.jpg'],['幸運天藍','%E5%A4%A9%E8%97%8D.jpg'],['藍莓紫','%E8%97%8D%E8%8E%93%E7%B4%AB.jpg'],['奇幻粉紅','%E7%B2%89%E7%B4%85.jpg']]},
+{ key:'makeup', label:'其他化妝', opts:[['無',null],['珍珠髮飾','%E7%8F%8D%E7%8F%A0%E9%AB%AE%E9%A3%BE.jpg'],['早熟女孩','%E6%97%A9%E7%86%9F%E5%A5%B3%E5%AD%A9.jpg'],['橢圓形眼鏡','%E6%A9%A2%E5%9C%93%E5%BD%A2%E7%9C%BC%E9%8F%A1.jpg']]},
+{ key:'bracelet', label:'偶像公主手環', opts:[['陽葵款式','%E9%99%BD%E8%91%B5%E6%AC%BE%E5%BC%8F.jpg'],['美月款式','%E7%BE%8E%E6%9C%88%E6%AC%BE%E5%BC%8F.jpg'],['櫻款式','%E6%AB%BB%E6%AC%BE%E5%BC%8F.jpg']]},
+];
+
+const picks = {}; // 創角選擇
+const counts = { gachaOpen:0, gachaEnd:0, gachaEndFull:0, printCount:1, horiBase:1, horiAdd:0, video:0};
+let service = '', machine = '';
+let curAudio = null;
+
+function buildPickers() {
+const wrap = document.getElementById('pickers');
+CATS.forEach(cat => {
+const sec = document.createElement('section');
+sec.className = 'bg-white rounded-2xl shadow p-4 mb-4';
+sec.id = 'cat_' + cat.key;
+let html = '<div class="font-bold text-gray-700 mb-2">' + cat.label + ' <span class="text-pink-600">*</span></div><div class="grid grid-cols-3 sm:grid-cols-4 gap-2">';
+cat.opts.forEach(o => {
+const label = o[0], img = o[1];
+html += '<div class="opt p-1 text-center" data-cat="' + cat.key + '" data-val="' + label + '" onclick="pick(this)">';
+if (img) html += '<img src="' + IMG + img + '" alt="' + label + '" loading="lazy">';
+else html += '<div class="py-6 text-gray-400 font-bold">無</div>';
+html += '<div class="text-xs mt-1 text-gray-700">' + label + '</div>';
+if (cat.audio) html += '<button type="button" class="text-pink-600 text-sm" onclick="event.stopPropagation();playVoice(\'' + AUD + o[2] + '\',this)">▶ 試聽</button>';
+html += '</div>';
+});
+html += '</div>';
+sec.innerHTML = html;
+wrap.appendChild(sec);
+});
+}
+function pick(el) {
+const cat = el.dataset.cat;
+document.querySelectorAll('[data-cat="' + cat + '"]').forEach(e => e.classList.remove('sel'));
+el.classList.add('sel');
+picks[cat] = el.dataset.val;
+toggleHighlightColor();
+}
+function toggleHighlightColor() {
+const sec = document.getElementById('cat_highlightColor');
+if (!sec) return;
+const need = picks['highlight'] === '細挑染';
+sec.style.opacity = need? '1': '.35';
+sec.style.pointerEvents = need? 'auto': 'none';
+if (!need) { picks['highlightColor'] = ''; sec.querySelectorAll('.opt').forEach(e => e.classList.remove('sel'));}
+}
+function playVoice(url, btn) {
+if (curAudio) { curAudio.pause();}
+curAudio = new Audio(url);
+curAudio.play();
+}
+
+function setService(s) {
+service = s;
+document.getElementById('svcCreate').classList.toggle('sel', s === 'create');
+document.getElementById('svcGrind').classList.toggle('sel', s === 'grind');
+document.getElementById('panelCreate').classList.toggle('hidden', s!== 'create');
+document.getElementById('panelGrind').classList.toggle('hidden', s!== 'grind');
+}
+function setMachine(m) {
+machine = m;
+['Play','Print','Hori'].forEach(k => document.getElementById('m' + k).classList.remove('sel'));
+document.getElementById('gPlay').classList.add('hidden');
+document.getElementById('gPrint').classList.add('hidden');
+document.getElementById('gHori').classList.add('hidden');
+if (m === 'play') { document.getElementById('mPlay').classList.add('sel'); document.getElementById('gPlay').classList.remove('hidden');}
+if (m === 'print') { document.getElementById('mPrint').classList.add('sel'); document.getElementById('gPrint').classList.remove('hidden');}
+if (m === 'hori') { document.getElementById('mHori').classList.add('sel'); document.getElementById('gHori').classList.remove('hidden');}
+calcTotal();
+}
+function buildSteppers() {
+document.querySelectorAll('.stepper').forEach(sp => {
+const key = sp.dataset.key, max = +sp.dataset.max;
+sp.innerHTML = '<button type="button" class="bg-pink-100 rounded-lg font-bold text-pink-700">−</button>' +
+'<span class="inline-block w-10 text-center font-bold" id="cnt_' + key + '">' + counts[key] + '</span>' +
+'<button type="button" class="bg-pink-100 rounded-lg font-bold text-pink-700">＋</button>';
+const [minus,, plus] = sp.children;
+minus.onclick = () => { if (counts[key] > (key === 'printCount' || key === 'horiBase'? 1: 0)) counts[key]--; syncStepper(key);};
+plus.onclick = () => { if (counts[key] < max) counts[key]++; syncStepper(key);};
+});
+}
+function syncStepper(key) {
+document.getElementById('cnt_' + key).textContent = counts[key];
+if (key === 'gachaEnd' || key === 'gachaEndFull') {
+// 結尾轉蛋一般+全套合計最多 2 次
+if (counts.gachaEnd + counts.gachaEndFull > 2) {
+if (key === 'gachaEnd') counts.gachaEndFull = Math.max(0, 2 - counts.gachaEnd);
+else counts.gachaEnd = Math.max(0, 2 - counts.gachaEndFull);
+document.getElementById('cnt_gachaEnd').textContent = counts.gachaEnd;
+document.getElementById('cnt_gachaEndFull').textContent = counts.gachaEndFull;
+}
+}
+calcTotal();
+}
+function calcTotal() {
+let t = 0;
+if (service === 'grind' && machine) {
+t += 30; // 入場費（橫機基本掉卡本身即含遊玩，仍照價目以入場概念顯示於明細）
+if (machine === 'play') t += counts.gachaOpen * 30 + counts.gachaEnd * 30 + counts.gachaEndFull * 90 - 30 + 30; // 入場30已計
+if (machine === 'print') t += counts.printCount * 30;
+if (machine === 'hori') t += counts.horiBase * 30 + counts.horiAdd * 30 - 30; // 橫機無入場費，扣回
+t += counts.video * 10;
+if (document.getElementById('outfitChange').checked) t += 30;
+}
+document.getElementById('grindTotal').textContent = 'NT$ ' + t;
+return t;
+}
+document.addEventListener('change', e => { if (e.target.id === 'outfitChange') calcTotal(); if (e.target.id === 'isNewbie') document.getElementById('newbieNote').classList.toggle('hidden',!e.target.checked);});
+
+function err(msg) { const e = document.getElementById('errMsg'); e.textContent = msg; e.classList.remove('hidden'); window.scrollTo(0, document.body.scrollHeight);}
+function buildData() {
+const orderId = document.getElementById('orderId').value.trim();
+if (!orderId) return err('請先填賣貨便訂單編號'), null;
+if (!service) return err('請先選擇服務：創角 或 代刷帳號'), null;
+const d = { time: new Date().toISOString(), orderId, service};
+if (service === 'create') {
+d.name = document.getElementById('chName').value.trim();
+d.birthday = document.getElementById('chBirth').value;
+d.age = document.getElementById('chAge').value;
+if (!d.name ||!d.birthday ||!d.age) return err('創角的基本資料（名字、生日、年齡）都要填喔'), null;
+for (const cat of CATS) {
+if (cat.key === 'highlightColor' && picks['highlight']!== '細挑染') continue;
+if (!picks[cat.key]) return err('還沒選：' + cat.label), null;
+d[cat.key] = picks[cat.key];
+}
+d.note = document.getElementById('chNote').value.trim();
+} else {
+if (!machine) return err('請先選機台與服務'), null;
+d.machine = machine;
+Object.assign(d, counts);
+d.wishSong = document.getElementById('wishSong').value.trim();
+d.wishCard = document.getElementById('wishCard').value.trim();
+d.partner = document.getElementById('partner').value;
+d.printOrient = document.getElementById('printOrient').value;
+d.printPose = document.getElementById('printPose').value.trim();
+d.outfitChange = document.getElementById('outfitChange').checked;
+d.isNewbie = document.getElementById('isNewbie').checked;
+if (d.isNewbie && machine === 'print') return err('提醒：初次遊玩尚無法印友卡，請先選「純遊玩」完成一輪喔'), null;
+d.total = calcTotal();
+d.note = document.getElementById('grNote').value.trim();
+}
+return d;
+}
+function summaryText(d) {
+const L = [];
+L.push('');
+L.push('訂單編號：' + d.orderId);
+if (d.service === 'create') {
+L.push('服務：創角');
+L.push('名字：' + d.name + '｜生日：' + d.birthday + '｜年齡：' + d.age);
+const names = { face:'臉型', voice:'聲線', skin:'膚色', eyes:'眼睛顏色', bangs:'瀏海', backHair:'後方髮型', hairColor:'頭髮顏色', highlight:'挑染', highlightColor:'挑染顏色', makeup:'其他化妝', bracelet:'手環'};
+for (const k in names) if (d[k]) L.push(names[k] + '：' + d[k]);
+if (d.note) L.push('備註：' + d.note);
+} else {
+const mName = { play:'直機｜純遊玩', print:'直機｜印友卡', hori:'橫機'};
+L.push('服務：代刷帳號（' + mName[d.machine] + '）');
+if (d.machine === 'play') {
+L.push('開場轉蛋：' + d.gachaOpen + ' 次｜結尾轉蛋一般：' + d.gachaEnd + ' 次｜全套：' + d.gachaEndFull + ' 次');
+if (d.wishSong) L.push('許願曲目：' + d.wishSong);
+if (d.wishCard) L.push('卡面許願：' + d.wishCard);
+L.push('搭檔：' + d.partner);
+}
+if (d.machine === 'print') { L.push('印製張數：' + d.printCount + '｜版式：' + d.printOrient); if (d.printPose) L.push('指定動作／版型：' + d.printPose);}
+if (d.machine === 'hori') L.push('基本掉卡：' + d.horiBase + ' 張｜加購：' + d.horiAdd + ' 張');
+if (d.video) L.push('錄影：' + d.video + ' 局');
+if (d.outfitChange) L.push('更換服裝：是');
+if (d.isNewbie) L.push('新手：是');
+L.push('預估總價：NT$ ' + d.total);
+if (d.note) L.push('備註：' + d.note);
+L.push('（帳號截圖我會另外傳給你們配對）');
+}
+return L.join('\n');
+}
+async function submitForm() {
+document.getElementById('errMsg').classList.add('hidden');
+const d = buildData();
+if (!d) return;
+const btn = document.getElementById('submitBtn');
+btn.disabled = true; btn.textContent = '送出中…';
+if (APPS_SCRIPT_URL) {
+try { await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain'}, body: JSON.stringify(d)});} catch (e) {}
+}
+document.getElementById('summary').value = summaryText(d);
+document.getElementById('result').classList.remove('hidden');
+btn.textContent = '已送出 ✓ 可再次送出修正';
+btn.disabled = false;
+window.scrollTo(0, document.body.scrollHeight);
+}
+function copySummary() {
+const s = document.getElementById('summary');
+s.select();
+navigator.clipboard.writeText(s.value);
+}
+buildPickers();
+buildSteppers();
+toggleHighlightColor();
+</script>
+</body>
+</html>
